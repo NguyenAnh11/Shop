@@ -1,12 +1,15 @@
-var builder = WebApplication.CreateBuilder(args);
+using Shop.Application;
+using Shop.Infrastructure;
 
-// Add services to the container.
+var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddControllers();
 
-var app = builder.Build();
+builder.Services.AddInfrastructure(builder.Configuration);
 
-// Configure the HTTP request pipeline.
+builder.Services.AddApplication();
+
+var app = builder.Build();
 
 app.UseAuthorization();
 
