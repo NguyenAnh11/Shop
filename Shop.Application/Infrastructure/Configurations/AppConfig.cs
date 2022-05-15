@@ -1,6 +1,4 @@
-﻿using Microsoft.Toolkit.Diagnostics;
-
-namespace Shop.Application.Infrastructure.Configurations
+﻿namespace Shop.Application.Infrastructure.Configurations
 {
     public class AppConfig
     {
@@ -25,7 +23,7 @@ namespace Shop.Application.Infrastructure.Configurations
         {
             Guard.IsNotNull(configs, nameof(configs));
 
-            foreach(var config in configs)
+            foreach (var config in configs)
             {
                 _configs[config.GetType()] = config;
             }

@@ -1,6 +1,4 @@
-﻿using Shop.SharedKernel.Interfaces;
-
-namespace Shop.SharedKernel
+﻿namespace Shop.Application.Infrastructure.Models
 {
     public class PagedList<T> : List<T>, IPagedList<T>
     {
@@ -20,7 +18,7 @@ namespace Shop.SharedKernel
             IsFristPage = Page == 1;
             IsLastPage = Page == TotalPage;
 
-            AddRange(totalCount == null ? source.Skip((Page - 1) * PageSize).Take(PageSize) :  source); 
+            AddRange(totalCount == null ? source.Skip((Page - 1) * PageSize).Take(PageSize) : source);
         }
         public int Page { get; init; }
         public int PageSize { get; init; }

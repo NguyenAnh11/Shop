@@ -1,4 +1,4 @@
-﻿namespace Shop.SharedKernel.Interfaces
+﻿namespace Shop.Application.Infrastructure.Models
 {
     public interface IPagedList<T> : IList<T>
     {

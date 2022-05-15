@@ -3,6 +3,7 @@ using Shop.Application.Infrastructure;
 using Shop.Application.Infrastructure.TypeFinder;
 using Shop.SharedKernel;
 using Shop.SharedKernel.Interfaces;
+using Shop.Infrastructure.Persistence.Extensions;
 
 namespace Shop.Infrastructure.Persistence.Context
 {
@@ -40,6 +41,8 @@ namespace Shop.Infrastructure.Persistence.Context
             }
 
             modelBuilder.ApplyConfigurationsFromAssembly(typeof(ShopContext).Assembly);
+
+            modelBuilder.ApplyGlobalFilter<ISoftDelete>(p => !p.IsDelete);
         }
 
         public override Task<int> SaveChangesAsync(bool acceptAllChangesOnSuccess, CancellationToken cancellationToken = default)

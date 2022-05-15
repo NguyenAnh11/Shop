@@ -1,5 +1,4 @@
-﻿using Microsoft.Toolkit.Diagnostics;
-using System.Diagnostics;
+﻿using System.Diagnostics;
 using System.Reflection;
 using System.Text.RegularExpressions;
 

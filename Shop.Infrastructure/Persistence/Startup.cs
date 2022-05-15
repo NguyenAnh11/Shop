@@ -17,6 +17,8 @@ namespace Shop.Infrastructure.Persistence
 
             services.AddScoped(typeof(IRepository<>), typeof(Repository<>));
 
+            services.AddScoped(typeof(IReadRepository<>), typeof(Repository<>));
+
             return services;
         }
     }

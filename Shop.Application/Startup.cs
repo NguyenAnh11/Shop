@@ -1,10 +1,4 @@
-﻿using Microsoft.Extensions.DependencyInjection;
-using Shop.Application.Infrastructure;
-using Shop.Application.Infrastructure.Automapper;
-using Shop.Application.Infrastructure.TypeFinder;
-using AutoMapper;
-
-namespace Shop.Application
+﻿namespace Shop.Application
 {
     public static class Startup
     {
@@ -19,13 +13,14 @@ namespace Shop.Application
 
             var mapperConfiguration = new MapperConfiguration(config =>
             {
-                foreach(var profile in profiles)
+                foreach (var profile in profiles)
                 {
                     config.AddProfile(profile.GetType());
                 }
             });
 
-            services.AddSingleton(mapperConfiguration.CreateMapper());
+            
+
 
             return services;
         }
