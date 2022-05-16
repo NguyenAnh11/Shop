@@ -10,6 +10,4 @@ global using Shop.Application.Infrastructure.Models;
 global using Shop.Application.Infrastructure.Persistence;
 global using Shop.Application.Infrastructure.TypeFinder;
 global using Shop.Application.Localization.Dtos;
-global using Shop.Application.Localization.Mapping;
-global using Shop.Domain.Localization;
 global using Shop.SharedKernel;

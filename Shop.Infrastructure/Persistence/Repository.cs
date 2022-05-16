@@ -83,7 +83,7 @@ namespace Shop.Infrastructure.Persistence
             await _context.SaveChangesAsync();
         }
 
-        public async Task UpdateAsync(T entity)
+        public async Task Update(T entity)
         {
             Guard.IsNotNull(entity, nameof(entity));
 

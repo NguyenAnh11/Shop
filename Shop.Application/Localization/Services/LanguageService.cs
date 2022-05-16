@@ -1,4 +1,6 @@
-﻿namespace Shop.Application.Localization.Services
+﻿using Shop.Domain.Localization;
+
+namespace Shop.Application.Localization.Services
 {
     public class LanguageService : ILanguageService
     { 
@@ -8,11 +10,24 @@
             _languageRepository = languageRepository;
         }
 
-        public async Task<Language> GetLanguageByIdAsync(int id)
+        public async Task<LanguageDto> GetLanguageByIdAsync(int id)
         {
             var language = await _languageRepository.GetByIdAsync(id);
 
-            return language;
+            var model = new LanguageDto
+            {
+                Id = language.Id,
+                Name = language.Name,
+                IsRtl = language.IsRtl,
+                IsActive = language.IsActive,
+                Code = language.Code,
+                Culture = language.Culture,
+                CurrencyId = language.CurrencyId ?? 0,
+                Flag = language.Flag,
+                DisplayOrder = language.DisplayOrder
+            };
+
+            return model;
         }
 
         public async Task<Language> GetLanguageByCodeAsync(string code)
@@ -46,8 +61,20 @@
             }
 
             using var transaction = await _languageRepository.BeginTransactionAsync();
-            
-            language = dto.ToModel(language);
+
+            language = new Language
+            {
+                Name = dto.Name,
+                IsRtl = dto.IsRtl,
+                IsActive = dto.IsActive,
+                Code = dto.Code.ToLower(),
+                Culture = dto.Culture,
+                Flag = dto.Flag,
+                DisplayOrder = dto.DisplayOrder
+            };
+
+            if (dto.CurrencyId == 0)
+                language.CurrencyId = null;
 
             await _languageRepository.InsertAsync(language);
 
@@ -60,12 +87,7 @@
         {
             Guard.IsNotNull(dto, nameof(dto));
             
-            if(id != dto.Id)
-            {
-                return Response.Bad();
-            }
-
-            var language = await GetLanguageByIdAsync(id);
+            var language = await _languageRepository.GetByIdAsync(id);
 
             Guard.IsNotNull(language, nameof(language));
 
@@ -86,9 +108,18 @@
 
             using var transaction = await _languageRepository.BeginTransactionAsync();
 
-            language = dto.MapTo(language);
+            language.Name = dto.Name;
+            language.IsRtl = dto.IsRtl;
+            language.IsActive = dto.IsActive;
+            language.Code = dto.Code.ToLower();
+            language.Culture = dto.Culture;
+            language.Flag = dto.Flag;
+            language.DisplayOrder = dto.DisplayOrder;
 
-            await _languageRepository.UpdateAsync(language);
+            if (dto.CurrencyId != 0)
+                language.CurrencyId = null;
+
+            await _languageRepository.Update(language);
 
             await transaction.CommitAsync();
 
@@ -97,7 +128,7 @@
 
         public async Task<Response> DeleteLanguageAsync(int id)
         {
-            var language = await GetLanguageByIdAsync(id);
+            var language = await _languageRepository.GetByIdAsync(id);
 
             Guard.IsNotNull(language, nameof(language));
 

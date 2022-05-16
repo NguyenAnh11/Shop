@@ -9,7 +9,7 @@
         Task<IPagedList<T>> GetPagedListAsync(Func<IQueryable<T>, IQueryable<T>> func, int page, int pageSize, bool includeDelete = false);
         Task<IPagedList<T>> GetPagedListAsync(Func<IQueryable<T>, Task<IQueryable<T>>> func, int page, int pageSize, bool includeDelete = false);
         Task InsertAsync(T entity);
-        Task UpdateAsync(T entity);
+        Task Update(T entity);
         Task DeleteAsync(T entity);
         Task<IDbContextTransaction> BeginTransactionAsync();
     }

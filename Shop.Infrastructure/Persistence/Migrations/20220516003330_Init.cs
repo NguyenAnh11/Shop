@@ -30,6 +30,34 @@ namespace Shop.Infrastructure.Persistence.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "Customer",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    IsDelete = table.Column<bool>(type: "bit", nullable: false),
+                    CreateUtc = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    UpdateUtc = table.Column<DateTime>(type: "datetime2", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Customer", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Role",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    Name = table.Column<string>(type: "nvarchar(max)", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Role", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "Setting",
                 columns: table => new
                 {
@@ -50,13 +78,13 @@ namespace Shop.Infrastructure.Persistence.Migrations
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
                     Name = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    IsActive = table.Column<bool>(type: "bit", nullable: false),
                     IsRtl = table.Column<bool>(type: "bit", nullable: false),
-                    CurrencyId = table.Column<int>(type: "int", nullable: true),
+                    IsActive = table.Column<bool>(type: "bit", nullable: false),
                     Code = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     Culture = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     Flag = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    DisplayOrder = table.Column<int>(type: "int", nullable: false)
+                    DisplayOrder = table.Column<int>(type: "int", nullable: false),
+                    CurrencyId = table.Column<int>(type: "int", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -75,11 +103,11 @@ namespace Shop.Infrastructure.Persistence.Migrations
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    LanguageId = table.Column<int>(type: "int", nullable: true),
                     EntityId = table.Column<int>(type: "int", nullable: false),
                     EntityGroup = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     EntityKey = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    EntityValue = table.Column<string>(type: "nvarchar(max)", nullable: true)
+                    EntityValue = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    LanguageId = table.Column<int>(type: "int", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -98,9 +126,9 @@ namespace Shop.Infrastructure.Persistence.Migrations
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    LanguageId = table.Column<int>(type: "int", nullable: false),
                     Name = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    Value = table.Column<string>(type: "nvarchar(max)", nullable: true)
+                    Value = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    LanguageId = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -132,10 +160,16 @@ namespace Shop.Infrastructure.Persistence.Migrations
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropTable(
+                name: "Customer");
+
+            migrationBuilder.DropTable(
                 name: "LocaleEntity");
 
             migrationBuilder.DropTable(
                 name: "LocaleResource");
+
+            migrationBuilder.DropTable(
+                name: "Role");
 
             migrationBuilder.DropTable(
                 name: "Setting");

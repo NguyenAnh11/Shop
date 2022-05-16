@@ -12,7 +12,7 @@ using Shop.Infrastructure.Persistence.Context;
 namespace Shop.Infrastructure.Persistence.Migrations
 {
     [DbContext(typeof(ShopContext))]
-    [Migration("20220513075353_Init")]
+    [Migration("20220516003330_Init")]
     partial class Init
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -41,6 +41,44 @@ namespace Shop.Infrastructure.Persistence.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("Setting");
+                });
+
+            modelBuilder.Entity("Shop.Domain.Customers.Customer", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
+
+                    b.Property<DateTime>("CreateUtc")
+                        .HasColumnType("datetime2");
+
+                    b.Property<bool>("IsDelete")
+                        .HasColumnType("bit");
+
+                    b.Property<DateTime?>("UpdateUtc")
+                        .HasColumnType("datetime2");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Customer");
+                });
+
+            modelBuilder.Entity("Shop.Domain.Customers.Role", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
+
+                    b.Property<string>("Name")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Role");
                 });
 
             modelBuilder.Entity("Shop.Domain.Directory.Currency", b =>
@@ -157,9 +195,6 @@ namespace Shop.Infrastructure.Persistence.Migrations
                         .HasColumnType("int");
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
-
-                    b.Property<int>("EntityId")
-                        .HasColumnType("int");
 
                     b.Property<int>("LanguageId")
                         .HasColumnType("int");
