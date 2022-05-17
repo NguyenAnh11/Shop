@@ -1,37 +1,154 @@
-﻿using Shop.Domain.Localization;
+﻿using Shop.Application.Localization.Dtos;
+using Shop.Domain.Localization;
 
 namespace Shop.Application.Localization.Services
 {
-    public class LocalizationService : ILocalizationService
+    public class LocalizationService : AbstractService<LocaleStringResource>, ILocalizationService
     {
-        private readonly IRepository<LocaleResource> _lrRepository;
-        public LocalizationService(IRepository<LocaleResource> lrRepository)
+        public LocalizationService(ShopDbContext context) : base(context)
         {
-            _lrRepository = lrRepository;
         }
 
-        public async Task<string> GetResourceAsync(string name, int languageId = 0)
+        public async Task<LocaleStringResource> GetResourceByNameAsync(string name, int languageId, bool extractMatch = true)
         {
-            var resource = await GetResourceByNameAsync(name, languageId);
-
-            return resource.Name;
-        }
-
-        public async Task<LocaleResource> GetResourceByNameAsync(string name, int languageId = 0)
-        {
-            if (name.IsEmpty() || languageId < 0)
+            if (name.IsEmpty() || languageId <= 0)
                 return null;
 
-            if (languageId == 0)
-                languageId = 1;
+            var query = Table
+                .AsNoTracking()
+                .Where(p => p.LanguageId == languageId);
 
-            name = name.ToLower();
+            if (extractMatch)
+                query = query.ApplyPatternFilter(p => p.Name == name);
+            else
+                query = query.ApplyPatternFilter(p => EF.Functions.Like(p.Name, $"%{name}%"));
 
-            var resource = await _lrRepository.Table.FirstOrDefaultAsync(p => p.Name == name && p.LanguageId == languageId);
+            var lsr = await query.FirstOrDefaultAsync();
 
-            return resource;
+            return lsr;
         }
 
-        
+        public async Task<string> GetResourceAsync(string name)
+            => await GetResourceAsync(name, 1);
+
+        public async Task<string> GetResourceAsync(string name, int langaugeId)
+            => (await GetResourceByNameAsync(name, langaugeId))?.Value ?? name;
+
+        public async Task<string> GetLocalizedEnumAsync<TEnum>(TEnum enumValue)
+            where TEnum : struct, ILocalizedEnum
+            => await GetLocalizedEnumAsync(enumValue, 1);
+
+        public async Task<string> GetLocalizedEnumAsync<TEnum>(TEnum enumValue, int languageId)
+            where TEnum: struct, ILocalizedEnum
+        {
+            if (!typeof(TEnum).IsEnum)
+                throw new InvalidTypeException();
+
+            var name = string.Join('.', typeof(TEnum), enumValue);
+
+            if (languageId <= 0)
+                return name;
+
+            return (await GetResourceByNameAsync(name, languageId))?.Value ?? name;
+        }
+
+        public async Task<LocaleResourceDto> GetResourceByIdAsync(int id)
+        {
+            var resource = await Table.FindByIdAsync(id);
+
+            if (resource == null)
+                throw new NotFoundException();
+
+            return new LocaleResourceDto
+            {
+                Id = resource.Id,
+                Name = resource.Name,
+                Value = resource.Value,
+                LanguageId = resource.LanguageId
+            };
+        }
+
+        public async Task<Response<int>> InsertResourceAsync(LocaleResourceDto dto)
+        {
+            Guard.IsNotNull(dto, nameof(dto));
+
+            var language = await _context.Set<Language>().FindByIdAsync(dto.LanguageId);
+
+            if (language == null)
+                return Response<int>.Bad();
+
+            var resource = await GetResourceByNameAsync(dto.Name, dto.LanguageId);
+
+            if (resource != null)
+            {
+                return Response<int>.Bad("Resource.Error.NameAlreadyExist");
+            }
+
+            using var transaction = await _context.Database.BeginTransactionAsync();
+
+            resource = new LocaleStringResource
+            {
+                Value = dto.Value,
+                Name = dto.Name.ToLower(),
+                LanguageId = dto.LanguageId
+            };
+
+            await Table.AddAsync(resource);
+
+            await _context.SaveChangesAsync();
+            await transaction.CommitAsync();
+
+            return Response<int>.Ok(resource.Id);
+        }
+
+        public async Task<Response> UpdateResourceAsync(LocaleResourceDto dto)
+        {
+            Guard.IsNotNull(dto, nameof(dto));
+
+            var resource = await Table.FindByIdAsync(dto.Id, tracked: true);
+
+            if (resource == null)
+                throw new NotFoundException();
+
+            var language = await _context.Set<Language>().FindByIdAsync(dto.LanguageId);
+
+            if (language == null)
+                return Response.Bad();
+
+            if (!resource.Name.EqualsNoCase(dto.Name))
+            {
+                if (await GetResourceByNameAsync(dto.Name, dto.LanguageId) != null)
+                {
+                    return Response.Bad("Resource.Error.NameAlreadyExist");
+                }
+            }
+
+            using var transaction = await _context.Database.BeginTransactionAsync();
+
+            resource.Value = dto.Value;
+            resource.Name = dto.Name.ToLower();
+            resource.LanguageId = dto.LanguageId;
+
+            await _context.SaveChangesAsync();
+            await transaction.CommitAsync();
+
+            return Response.Ok();
+        }
+
+        public async Task<Response> DeleteResourceAsync(int id)
+        {
+            var resource = await Table.FindByIdAsync(id);
+
+            if (resource == null)
+                throw new NotFoundException();
+
+            using var transaction = await _context.Database.BeginTransactionAsync();
+
+            Table.Remove(resource);
+
+            await transaction.CommitAsync();
+
+            return Response.Ok();
+        }
     }
 }

@@ -1,14 +1,20 @@
-﻿using Shop.Domain.Localization;
+﻿using Shop.Application.Localization.Dtos;
+using Shop.Domain.Localization;
 
 namespace Shop.Application.Localization.Services
 {
-    public interface ILanguageService
+    public interface ILanguageService : IAbstractService<Language>
     {
-        Task<LanguageDto> GetLanguageByIdAsync(int id);
+        Task<IList<Language>> GetLanguagesAsync(bool includeHidden = true, bool isRtl = false);
+
         Task<Language> GetLanguageByCodeAsync(string code);
-        Task<IList<Language>> GetActiveLanguageAsync();
-        Task<Response<Language>> InsertLanguageAsync(LanguageDto dto);
-        Task<Response> UpdateLanguageAsync(int id, LanguageDto dto);
+
+        Task<LanguageDto> GetLanguageByIdAsync(int id);
+
+        Task<Response<int>> InsertLanguageAsync(LanguageDto dto);
+
+        Task<Response> UpdateLanguageAsync(LanguageDto dto);
+
         Task<Response> DeleteLanguageAsync(int id);
     }
-}
+}                             

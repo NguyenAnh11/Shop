@@ -1,33 +1,25 @@
-﻿using Shop.Domain.Localization;
+﻿using Shop.Application.Localization.Dtos;
+using Shop.Domain.Localization;
 
 namespace Shop.Application.Localization.Services
 {
-    public class LanguageService : ILanguageService
-    { 
-        private readonly IRepository<Language> _languageRepository;
-        public LanguageService(IRepository<Language> languageRepository)
+    public class LanguageService : AbstractService<Language>, ILanguageService
+    {
+        public LanguageService(ShopDbContext context) : base(context)
         {
-            _languageRepository = languageRepository;
+
         }
 
-        public async Task<LanguageDto> GetLanguageByIdAsync(int id)
+        public async Task<IList<Language>> GetLanguagesAsync(bool includeHidden = true, bool isRtl = false)
         {
-            var language = await _languageRepository.GetByIdAsync(id);
+            var languages = await Table
+                .AsNoTracking()
+                .Where(p => p.IsRtl == isRtl)
+                .ApplyActiveFilter(includeHidden)
+                .OrderBy(p => p.DisplayOrder)
+                .ToListAsync();
 
-            var model = new LanguageDto
-            {
-                Id = language.Id,
-                Name = language.Name,
-                IsRtl = language.IsRtl,
-                IsActive = language.IsActive,
-                Code = language.Code,
-                Culture = language.Culture,
-                CurrencyId = language.CurrencyId ?? 0,
-                Flag = language.Flag,
-                DisplayOrder = language.DisplayOrder
-            };
-
-            return model;
+            return languages;
         }
 
         public async Task<Language> GetLanguageByCodeAsync(string code)
@@ -37,30 +29,46 @@ namespace Shop.Application.Localization.Services
 
             code = code.ToLower();
 
-            var language = await _languageRepository.Table.FirstOrDefaultAsync(p => p.Code == code);
+            var language = await Table
+                .AsNoTracking()
+                .Where(x => x.Code == code)
+                .FirstOrDefaultAsync();
 
             return language;
         }
 
-        public async Task<IList<Language>> GetActiveLanguageAsync()
+        public async Task<LanguageDto> GetLanguageByIdAsync(int id)
         {
-            var languages = await _languageRepository.Table.Where(p => p.IsActive).ToListAsync();
+            var language = await Table.FindByIdAsync(id);
 
-            return languages;
+            if (language == null)
+                throw new NotFoundException();
+
+            return new LanguageDto
+            {
+                Id = language.Id,
+                Name = language.Name,
+                IsRtl = language.IsRtl,
+                IsActive = language.IsActive,
+                Code = language.Code,
+                Culture = language.Culture,
+                DisplayOrder = language.DisplayOrder,
+                CurrencyId = language.CurrencyId ?? 0
+            };
         }
 
-        public async Task<Response<Language>> InsertLanguageAsync(LanguageDto dto)
+        public async Task<Response<int>> InsertLanguageAsync(LanguageDto dto)
         {
             Guard.IsNotNull(dto, nameof(dto));
 
             var language = await GetLanguageByCodeAsync(dto.Code);
 
-            if(language != null)
+            if (language != null)
             {
-                return Response<Language>.Bad("Language.Error.CodeAlreadyExist");
+                return Response<int>.Bad("Language.Error.AlreadyCodeExist");
             }
 
-            using var transaction = await _languageRepository.BeginTransactionAsync();
+            using var transaction = await _context.Database.BeginTransactionAsync();
 
             language = new Language
             {
@@ -69,58 +77,60 @@ namespace Shop.Application.Localization.Services
                 IsActive = dto.IsActive,
                 Code = dto.Code.ToLower(),
                 Culture = dto.Culture,
-                Flag = dto.Flag,
                 DisplayOrder = dto.DisplayOrder
             };
 
             if (dto.CurrencyId == 0)
                 language.CurrencyId = null;
 
-            await _languageRepository.InsertAsync(language);
+            await Table.AddAsync(language);
 
+            await _context.SaveChangesAsync();
             await transaction.CommitAsync();
 
-            return Response<Language>.Ok(language);
+            return Response<int>.Ok(language.Id);
         }
 
-        public async Task<Response> UpdateLanguageAsync(int id, LanguageDto dto)
+        public async Task<Response> UpdateLanguageAsync(LanguageDto dto)
         {
             Guard.IsNotNull(dto, nameof(dto));
-            
-            var language = await _languageRepository.GetByIdAsync(id);
 
-            Guard.IsNotNull(language, nameof(language));
+            var language = await Table.FindByIdAsync(dto.Id, tracked: true);
 
-            if(!language.Code.EqualsNoCase(dto.Code))
+            if (language == null)
+                throw new NotFoundException();
+
+            if (!language.Code.EqualsNoCase(dto.Code))
             {
-                return Response.Bad("Language.Error.CodeAlreadyExist");
-            }
-
-            if (language.IsActive && !dto.IsActive)
-            { 
-                var activeLanguages = await GetActiveLanguageAsync();
-
-                if (activeLanguages.Count == 1 && activeLanguages[0].Id == language.Id)
+                if (await GetLanguageByCodeAsync(dto.Code) != null)
                 {
-                    return Response.Bad("Language.Error.AtLeastActive");
+                    return Response.Bad("Language.Error.AlreadyCodeExist");
                 }
             }
 
-            using var transaction = await _languageRepository.BeginTransactionAsync();
+            if (language.IsActive && !dto.IsActive)
+            {
+                var languages = await GetLanguagesAsync();
+
+                if (languages.Count == 1 && languages[0].Id == language.Id)
+                {
+                    return Response.Bad("Language.Error.RequireAtLeastActive");
+                }
+            }
+
+            using var transaction = await _context.Database.BeginTransactionAsync();
 
             language.Name = dto.Name;
             language.IsRtl = dto.IsRtl;
             language.IsActive = dto.IsActive;
             language.Code = dto.Code.ToLower();
             language.Culture = dto.Culture;
-            language.Flag = dto.Flag;
             language.DisplayOrder = dto.DisplayOrder;
 
-            if (dto.CurrencyId != 0)
+            if (dto.CurrencyId == 0)
                 language.CurrencyId = null;
 
-            await _languageRepository.Update(language);
-
+            await _context.SaveChangesAsync();
             await transaction.CommitAsync();
 
             return Response.Ok();
@@ -128,24 +138,26 @@ namespace Shop.Application.Localization.Services
 
         public async Task<Response> DeleteLanguageAsync(int id)
         {
-            var language = await _languageRepository.GetByIdAsync(id);
+            var language = await Table.FindByIdAsync(id);
 
-            Guard.IsNotNull(language, nameof(language));
+            if (language == null)
+                throw new NotFoundException();
 
-            if(language.IsActive)
+            if (language.IsActive)
             {
-                var activeLanguages = await GetActiveLanguageAsync();
+                var languages = await GetLanguagesAsync();
 
-                if (activeLanguages.Count == 1 && activeLanguages[0].Id == language.Id)
+                if (languages.Count == 1 && languages[0].Id == language.Id)
                 {
-                    return Response.Bad("Language.Error.AtLeastActive");
+                    return Response.Bad("Language.Error.RequireAtLeastActive");
                 }
             }
 
-            using var transaction = await _languageRepository.BeginTransactionAsync();
+            using var transaction = await _context.Database.BeginTransactionAsync();
 
-            await _languageRepository.DeleteAsync(language);
+            Table.Remove(language);
 
+            await _context.SaveChangesAsync();
             await transaction.CommitAsync();
 
             return Response.Ok();

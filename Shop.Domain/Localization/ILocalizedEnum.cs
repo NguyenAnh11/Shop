@@ -1,12 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace Shop.Domain.Localization
+﻿namespace Shop.Domain.Localization
 {
-    internal interface ILocalizedEnum
+    public interface ILocalizedEnum
     {
     }
 }
