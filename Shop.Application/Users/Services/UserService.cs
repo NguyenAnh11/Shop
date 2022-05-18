@@ -1,18 +1,22 @@
-﻿using Shop.Domain.Users;
+﻿using Shop.Application.Security.Services;
 using Shop.Application.Users.Settings;
+using Shop.Domain.Users;
 
 namespace Shop.Application.Users.Services
 {
     public class UserService : AbstractService<User>, IUserService
     {
         private readonly UserSetting _userSetting;
+        private readonly IRoleService _roleService;
         private readonly IEncryptionService _encryptionService;
         public UserService(
             ShopDbContext context, 
             UserSetting userSetting,
+            IRoleService roleService,
             IEncryptionService encryptionService) : base(context)
         {
             _userSetting = userSetting;
+            _roleService = roleService; 
             _encryptionService = encryptionService;
         }
 
@@ -43,13 +47,26 @@ namespace Shop.Application.Users.Services
             return user;
         }
 
-        public async Task<bool> VerifyPassword(User user, string enterPassword)
+        public async Task<bool> IsAdminAsync(User user)
+            => await _roleService.IsInRoleAsync(user, SystemRoleName.Adminstrator);
+
+        public async Task<bool> IsRegisterAsync(User user)
+            => await _roleService.IsInRoleAsync(user, SystemRoleName.Register);
+
+        public async Task<bool> IsVendorAsync(User user)
+            => await _roleService.IsInRoleAsync(user, SystemRoleName.Vendor);
+
+        public async Task<bool> IsGuestAsync(User user)
+            => await _roleService.IsInRoleAsync(user, SystemRoleName.Guest);
+
+
+        private async Task<bool> VerifyPassword(User user, string enterPassword)
         {
             var userPassword = await _context
                 .Set<UserPassword>()
                 .FirstOrDefaultAsync(p => p.UserId == user.Id);
 
-            var password = _encryptionService.CreateHash(enterPassword, userPassword.Salt);
+            var password = _encryptionService.CreateHash(enterPassword, userPassword.Salt, _userSetting.PasswordHashAlgorithm);
 
             return userPassword.Hash == password;
         }
@@ -90,7 +107,5 @@ namespace Shop.Application.Users.Services
 
             return Response<User>.Ok(user);
         }
-
-        //public async Task
     }
 }

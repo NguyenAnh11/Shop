@@ -4,9 +4,11 @@ namespace Shop.Application.Security.Services
 {
     public interface ITokenService
     {
-        string GetAccessToken(List<Claim> claims);
+        protected (string Token, DateTime Expires) GetToken(IList<Claim> claims, int expireInSecond);
 
-        string GetRefreshToken(List<Claim> claims);
+        string GetAccessToken(IList<Claim> claims);
+
+        (string Token, DateTime Expires) GetRefreshToken(IList<Claim> claims);
 
         ClaimsPrincipal VerifyToken(string token);
     }

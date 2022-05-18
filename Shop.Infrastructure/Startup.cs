@@ -24,8 +24,7 @@ namespace Shop.Infrastructure
 
             services
                 .AddCustomCors()
-                .AddCustomMvc()
-                .AddSecurityService();
+                .AddCustomMvc();
 
             return services;
         }

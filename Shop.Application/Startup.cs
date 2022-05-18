@@ -9,6 +9,7 @@
                 .AddSetting()
                 .AddAppDbContext()
                 .AddLocalizationModuleService()
+                .AddSecurityModuleService()
                 .AddUsersModuleService();
               
             return services;
@@ -56,21 +57,6 @@
             return services;
         }
 
-        public static IServiceCollection AddLocalizationModuleService(this IServiceCollection services)
-        {
-            services.AddScoped<ILanguageService, LanguageService>();
-            services.AddScoped<ILocalizationService, LocalizationService>();
-            services.AddScoped<ILocalizedEntityService, LocalizedEntityService>();
-
-            return services;
-        }
-
-        public static IServiceCollection AddUsersModuleService(this IServiceCollection services)
-        {
-            services.AddScoped<IUserService, UserService>();
-            services.AddScoped<IRoleService, RoleService>();
-
-            return services;
-        }
+     
     }
 }

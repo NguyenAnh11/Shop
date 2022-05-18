@@ -24,7 +24,7 @@
 
   <ItemGroup>
     <Folder Include="Infrastructure\Data\Configurations\" />
-    <Folder Include="Users\Dtos\" />
+    <Folder Include="Localization\Settings\" />
   </ItemGroup>
 
 </Project>

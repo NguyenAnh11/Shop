@@ -1,11 +1,9 @@
 ﻿using Microsoft.IdentityModel.Tokens;
-using Shop.Application.Security.Services;
-using Shop.Infrastructure.Security.Configurations;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
 
-namespace Shop.Infrastructure.Security.Services
+namespace Shop.Application.Security.Services
 {
     public class TokenService : ITokenService
     {
@@ -15,22 +13,24 @@ namespace Shop.Infrastructure.Security.Services
             _tokenConfig = Singleton<AppConfig>.Instance.Get<TokenConfig>();
         }
 
-        protected string GetToken(List<Claim> claims, int tokenExpireInSecond)
+        public (string Token, DateTime Expires) GetToken(IList<Claim> claims, int expireInSecond)
         {
             Guard.IsNotNull(claims, nameof(claims));
-            Guard.IsGreaterThan(tokenExpireInSecond, 0, nameof(tokenExpireInSecond));
 
             var tokenHandler = new JwtSecurityTokenHandler();
 
             var tokenKey = Encoding.UTF8.GetBytes(_tokenConfig.Key);
+
+            var now = DateTime.Now;
+            var expires = now.AddSeconds(expireInSecond);
 
             var tokenDescriptor = new SecurityTokenDescriptor
             {
                 Subject = new ClaimsIdentity(claims),
                 Audience = _tokenConfig.Audience,
                 Issuer = _tokenConfig.Issuer,
-                IssuedAt = DateTime.Now,
-                Expires = DateTime.Now.AddSeconds(tokenExpireInSecond),
+                Expires = expires,
+                IssuedAt = now,
                 SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(tokenKey), SecurityAlgorithms.HmacSha256Signature)
             };
 
@@ -38,13 +38,13 @@ namespace Shop.Infrastructure.Security.Services
 
             var token = tokenHandler.WriteToken(securityToken);
 
-            return token;
+            return (token, expires);
         }
 
-        public string GetAccessToken(List<Claim> claims)
-            => GetToken(claims, _tokenConfig.AccessTokenExpireInSecond);
+        public string GetAccessToken(IList<Claim> claims)
+            => GetToken(claims, _tokenConfig.AccessTokenExpireInSecond).Token;
 
-        public string GetRefreshToken(List<Claim> claims)
+        public (string Token, DateTime Expires) GetRefreshToken(IList<Claim> claims)
             => GetToken(claims, _tokenConfig.RefreshTokenExpireInSecond);
 
         public ClaimsPrincipal VerifyToken(string token)

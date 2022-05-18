@@ -8,14 +8,8 @@ namespace Shop.Application.Users.Services
 
         Task<IList<Role>> GetRolesAsync(bool includeHidden = false);
 
-        Task<IList<int>> GetRolesByUserAsync(User user, bool includeHidden = false);
+        Task<IList<int>> GetRolesByUserAsync(User user, bool includeHidden = true);
 
-        Task<bool> IsInRoleAsync(User user, string name, bool includeHidden = false);
-
-        Task<bool> IsAdminAsync(User user);
-
-        Task<bool> IsRegisterAsync(User user);
-
-        Task<bool> IsVendorAsync(User user);
+        Task<bool> IsInRoleAsync(User user, string name, bool includeHidden = true);
     }
 }

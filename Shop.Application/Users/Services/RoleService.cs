@@ -32,7 +32,7 @@ namespace Shop.Application.Users.Services
             return roles;
         }
 
-        public async Task<IList<int>> GetRolesByUserAsync(User user, bool includeHidden = false)
+        public async Task<IList<int>> GetRolesByUserAsync(User user, bool includeHidden = true)
         {
             Guard.IsNotNull(user, nameof(user));
 
@@ -53,7 +53,7 @@ namespace Shop.Application.Users.Services
             return ids;
         }
 
-        public async Task<bool> IsInRoleAsync(User user, string name, bool includeHidden = false)
+        public async Task<bool> IsInRoleAsync(User user, string name, bool includeHidden = true)
         {
             Guard.IsNotNull(user, nameof(user));
             Guard.IsNotNullOrEmpty(name, nameof(name));
@@ -63,19 +63,11 @@ namespace Shop.Application.Users.Services
                 .ApplyActiveFilter(includeHidden)
                 .FirstOrDefaultAsync(p => p.Name == name);
 
-            if(role == null)
-                return false;
+            Guard.IsNotNull(role, nameof(role));
 
-            return await _context.Set<UserRole>().AnyAsync(p => p.UserId == user.Id && p.RoleId == role.Id);
+            return await _context
+                .Set<UserRole>()
+                .AnyAsync(p => p.UserId == user.Id && p.RoleId == role.Id);
         }
-
-        public async Task<bool> IsAdminAsync(User user)
-            => await IsInRoleAsync(user, "ADMINSTRATOR");
-
-        public async Task<bool> IsRegisterAsync(User user)
-            => await IsInRoleAsync(user, "REGISTER");
-
-        public async Task<bool> IsVendorAsync(User user)
-            => await IsInRoleAsync(user, "VENDOR");
     }
 }

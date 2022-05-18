@@ -2,8 +2,8 @@
 {
     public interface IEncryptionService
     {
-        string CreateSalt();
+        string CreateSalt(int size);
 
-        string CreateHash(string value, string salt);
+        string CreateHash(string value, string salt, string algorithm);
     }
 }

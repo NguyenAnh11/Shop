@@ -1,4 +1,4 @@
-﻿namespace Shop.Infrastructure.Security.Configurations
+﻿namespace Shop.Application.Security
 {
     public class TokenConfig : IConfig
     {
