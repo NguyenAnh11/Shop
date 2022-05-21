@@ -1,0 +1,12 @@
+﻿global using Shop.Application;
+global using Shop.Application.Authentication.Services;
+global using Shop.Application.Localization.Dtos;
+global using Shop.Application.Localization.Services;
+global using Shop.Application.Messages.Services;
+global using Shop.Application.Users;
+global using Shop.Application.Users.Dtos;
+global using Shop.Application.Users.Services;
+global using Shop.Application.Users.Settings;
+global using Shop.Application.Security.Services;
+global using Shop.Application.Infrastructure;
+global using Shop.Infrastructure;

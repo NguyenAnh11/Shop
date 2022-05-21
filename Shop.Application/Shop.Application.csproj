@@ -22,4 +22,8 @@
     <ProjectReference Include="..\Shop.Domain\Shop.Domain.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Infrastructure\Data\Configurations\" />
+  </ItemGroup>
+
 </Project>

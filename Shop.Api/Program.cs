@@ -1,6 +1,3 @@
-using Shop.Application;
-using Shop.Infrastructure;
-
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddControllers();
@@ -11,8 +8,6 @@ builder.Services.AddApplication();
 
 var app = builder.Build();
 
-app.UseAuthorization();
-
-app.MapControllers();
+app.UseInfrastructure(builder.Environment);
 
 app.Run();
