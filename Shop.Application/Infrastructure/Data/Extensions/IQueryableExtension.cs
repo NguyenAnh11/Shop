@@ -1,5 +1,4 @@
 ﻿using System.Linq.Expressions;
-using Shop.SharedKernel.Interfaces;
 
 namespace Shop.Application.Infrastructure.Data.Extensions
 {
@@ -15,6 +14,10 @@ namespace Shop.Application.Infrastructure.Data.Extensions
             where T : class, IActive
             => includeHidden ? source : source.Where(p => p.IsActive);
 
+        public static IQueryable<T> ApplyDeleteFilter<T>(this IQueryable<T> source, bool includeDelete = false)
+            where T : class, ISoftDelete
+            => includeDelete ? source : source.Where(p => !p.IsDelete);
+
         public static IQueryable<T> ApplyPatternFilter<T>(this IQueryable<T> query, Expression<Func<T, bool>> predicate)
         {
             Guard.IsNotNull(query, nameof(query));
@@ -23,7 +26,7 @@ namespace Shop.Application.Infrastructure.Data.Extensions
             return query.Where(predicate);
         }
 
-        public static async Task<IPagedList<T>> ToPagedListAsync<T>(this IQueryable<T> source, int page, int pageSize) where T : BaseEntity   
+        public static async Task<IPagedList<T>> ToPagedListAsync<T>(this IQueryable<T> source, int page, int pageSize) where T : BaseEntity
         {
             page = Math.Min(page, 1);
             pageSize = Math.Min(pageSize, 1);

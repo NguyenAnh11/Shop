@@ -27,35 +27,13 @@ namespace Shop.Application.Localization.Services
             if (code.IsEmpty())
                 return null;
 
-            code = code.ToLower();
+            var query = Table.AsNoTracking().ApplyPatternFilter(p => EF.Functions.Like(p.Code, $"%{code}"));
 
-            var language = await Table
-                .AsNoTracking()
-                .Where(x => x.Code == code)
-                .FirstOrDefaultAsync();
-
-            return language;
+            return await query.FirstOrDefaultAsync();
         }
 
-        public async Task<LanguageDto> GetLanguageByIdAsync(int id)
-        {
-            var language = await Table.FindByIdAsync(id);
-
-            if (language == null)
-                throw new NotFoundException();
-
-            return new LanguageDto
-            {
-                Id = language.Id,
-                Name = language.Name,
-                IsRtl = language.IsRtl,
-                IsActive = language.IsActive,
-                Code = language.Code,
-                Culture = language.Culture,
-                DisplayOrder = language.DisplayOrder,
-                CurrencyId = language.CurrencyId ?? 0
-            };
-        }
+        public async Task<Language> GetLanguageByIdAsync(int id)
+            => await Table.FindByIdAsync(id);
 
         public async Task<Response<int>> InsertLanguageAsync(LanguageDto dto)
         {
@@ -145,7 +123,7 @@ namespace Shop.Application.Localization.Services
 
             if (language.IsActive)
             {
-                var languages = await GetLanguagesAsync();
+                var languages = await GetLanguagesAsync(false);
 
                 if (languages.Count == 1 && languages[0].Id == language.Id)
                 {

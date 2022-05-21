@@ -5,9 +5,14 @@ namespace Shop.Application.Localization.Services
 {
     public class LocalizationService : AbstractService<LocaleStringResource>, ILocalizationService
     {
-        public LocalizationService(ShopDbContext context) : base(context)
+        private readonly IWorkContext _workContext;
+        public LocalizationService(ShopDbContext context, IWorkContext workContext) : base(context)
         {
+            _workContext = workContext;
         }
+
+        public async Task<LocaleStringResource> GetResourceByIdAsync(int id)
+            => await Table.FindByIdAsync(id);
 
         public async Task<LocaleStringResource> GetResourceByNameAsync(string name, int languageId, bool extractMatch = true)
         {
@@ -29,43 +34,29 @@ namespace Shop.Application.Localization.Services
         }
 
         public async Task<string> GetResourceAsync(string name)
-            => await GetResourceAsync(name, 1);
+            => await GetResourceAsync(name, (await _workContext.GetWorkingLanguageAsync()).Id);
 
         public async Task<string> GetResourceAsync(string name, int langaugeId)
             => (await GetResourceByNameAsync(name, langaugeId))?.Value ?? name;
 
         public async Task<string> GetLocalizedEnumAsync<TEnum>(TEnum enumValue)
             where TEnum : struct, ILocalizedEnum
-            => await GetLocalizedEnumAsync(enumValue, 1);
+            => await GetLocalizedEnumAsync(enumValue, (await _workContext.GetWorkingLanguageAsync()).Id);
 
         public async Task<string> GetLocalizedEnumAsync<TEnum>(TEnum enumValue, int languageId)
-            where TEnum: struct, ILocalizedEnum
+            where TEnum : struct, ILocalizedEnum
         {
             if (!typeof(TEnum).IsEnum)
                 throw new InvalidTypeException();
 
-            var name = string.Join('.', typeof(TEnum), enumValue);
+            var enumName = typeof(TEnum).Name.Split('.')?.Last();
+
+            var name = string.Join('.', enumName, enumValue);
 
             if (languageId <= 0)
                 return name;
 
             return (await GetResourceByNameAsync(name, languageId))?.Value ?? name;
-        }
-
-        public async Task<LocaleResourceDto> GetResourceByIdAsync(int id)
-        {
-            var resource = await Table.FindByIdAsync(id);
-
-            if (resource == null)
-                throw new NotFoundException();
-
-            return new LocaleResourceDto
-            {
-                Id = resource.Id,
-                Name = resource.Name,
-                Value = resource.Value,
-                LanguageId = resource.LanguageId
-            };
         }
 
         public async Task<Response<int>> InsertResourceAsync(LocaleResourceDto dto)

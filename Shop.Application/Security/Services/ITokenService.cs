@@ -10,6 +10,10 @@ namespace Shop.Application.Security.Services
 
         (string Token, DateTime Expires) GetRefreshToken(IList<Claim> claims);
 
+        string GetActiveAccountToken(IList<Claim> claims);
+
+        string GetRecoveryPasswordToken(IList<Claim> claims);
+
         ClaimsPrincipal VerifyToken(string token);
     }
 }

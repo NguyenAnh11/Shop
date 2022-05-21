@@ -10,7 +10,11 @@
                 .AddAppDbContext()
                 .AddLocalizationModuleService()
                 .AddSecurityModuleService()
-                .AddUsersModuleService();
+                .AddUsersModuleService()
+                .AddAuthenticationModuleService()
+                .AddMessageModuleService();
+
+            services.AddScoped<IWorkContext, WebWorkContext>();
               
             return services;
         }
@@ -57,6 +61,6 @@
             return services;
         }
 
-     
+        
     }
 }

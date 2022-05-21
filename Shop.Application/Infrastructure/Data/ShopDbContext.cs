@@ -38,8 +38,6 @@ namespace Shop.Application.Infrastructure.Data
             }
 
             modelBuilder.ApplyConfigurationsFromAssembly(typeof(ShopDbContext).Assembly);
-
-            modelBuilder.ApplyGlobalFilter<ISoftDelete>(p => !p.IsDelete);
         }
 
         public override Task<int> SaveChangesAsync(bool acceptAllChangesOnSuccess, CancellationToken cancellationToken = default)

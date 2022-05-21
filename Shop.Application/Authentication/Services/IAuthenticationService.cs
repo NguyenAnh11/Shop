@@ -1,12 +1,12 @@
 ﻿using Shop.Domain.Users;
 
-namespace Shop.Application.Authentication
+namespace Shop.Application.Authentication.Services
 {
     public interface IAuthenticationService
     {
-        Task<string> SignInAsync(User user);
+        Task<string> LoginAsync(User user);
 
-        Task SignOutAsync();
+        Task LogoutAsync();
 
         Task<Response<string>> RefreshTokenASync();
     }

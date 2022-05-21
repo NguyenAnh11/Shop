@@ -1,4 +1,5 @@
-﻿using Shop.Domain.Users;
+﻿using Shop.Application.Users.Dtos;
+using Shop.Domain.Users;
 
 namespace Shop.Application.Users.Services
 {
@@ -6,7 +7,7 @@ namespace Shop.Application.Users.Services
     {
         Task<User> GetUserByEmailAsync(string email);
 
-        Task<User> GetUserByIdAsync(int id);
+        Task<User> GetUserByIdAsync(int id, bool tracked = false);
 
         Task<User> GetUserByPhoneAsync(string phone);
 
@@ -18,6 +19,14 @@ namespace Shop.Application.Users.Services
 
         Task<bool> IsGuestAsync(User user);
 
-        Task<Response<User>> ValidateUserAsync(string email, string enterPassword);
+        Task<bool> IsRecoveryPasswordTokenValidAsync(string token);
+
+        Task<Response<User>> VerifyUserSigninAsync(string email, string enterPassword);
+
+        Task<Response<User>> ActiveAccountAsync(string token);
+
+        Task<Response<User>> RegisterUserAsync(RegisterDto dto);
+
+        Task<Response<string>> ChangePasswordAsync(User user, string oldPassword, string newPassword);
     }
 }

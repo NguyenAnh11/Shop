@@ -9,7 +9,7 @@ namespace Shop.Application.Localization.Services
 
         Task<Language> GetLanguageByCodeAsync(string code);
 
-        Task<LanguageDto> GetLanguageByIdAsync(int id);
+        Task<Language> GetLanguageByIdAsync(int id);
 
         Task<Response<int>> InsertLanguageAsync(LanguageDto dto);
 

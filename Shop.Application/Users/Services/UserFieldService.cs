@@ -49,7 +49,7 @@ namespace Shop.Application.Users.Services
             }
             else
             {
-                if (!field.IsEmpty())
+                if (field.IsEmpty())
                     return;
 
                 await Table.AddAsync(new UserFied

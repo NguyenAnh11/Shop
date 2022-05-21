@@ -43,7 +43,7 @@ namespace Shop.Application.Authentication.Services
             });
         }
 
-        public async Task<string> SignInAsync(User user)
+        public async Task<string> LoginAsync(User user)
         {
             Guard.IsNotNull(user, nameof(user));
 
@@ -60,7 +60,7 @@ namespace Shop.Application.Authentication.Services
             return accessToken;
         }
 
-        public async Task SignOutAsync()
+        public async Task LogoutAsync()
         {
             var princiapl = _httpContextAccessor.HttpContext.User;
 

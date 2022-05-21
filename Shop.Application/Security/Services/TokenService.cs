@@ -47,6 +47,12 @@ namespace Shop.Application.Security.Services
         public (string Token, DateTime Expires) GetRefreshToken(IList<Claim> claims)
             => GetToken(claims, _tokenConfig.RefreshTokenExpireInSecond);
 
+        public string GetActiveAccountToken(IList<Claim> claims)
+            => GetToken(claims, _tokenConfig.ActiveAccountTokenExpireInSecond).Token;
+
+        public string GetRecoveryPasswordToken(IList<Claim> claims)
+            => GetToken(claims, _tokenConfig.RecoveryPasswordTokenExpireInSecond).Token;
+
         public ClaimsPrincipal VerifyToken(string token)
         {
             if (token.IsEmpty())

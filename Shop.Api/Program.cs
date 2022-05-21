@@ -1,6 +1,3 @@
-using Shop.Application;
-using Shop.Infrastructure;
-
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddControllers();

@@ -3,7 +3,7 @@
     public class TokenConfig : IConfig
     {
         public string Name => "Token";
-        public string Key { get; set; }
+        public string Key { get; set; } = "This is secure token key";
         public string Audience => string.Join(';', Audiences);
         public string Issuer => string.Join(';', Issues);
         public IList<string> Audiences { get; set; } = new List<string>() { "http://localhost:3000" };

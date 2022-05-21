@@ -8,6 +8,9 @@ namespace Shop.Application.Users.Services
         {
         }
 
+        public async Task<Role> GetRoleByIdAsync(int id, bool tracked = false)
+            => await Table.FindByIdAsync(id, tracked: tracked);
+
         public async Task<Role> GetRoleByNameAsync(string name, bool includeHidden = false)
         {
             if (name.IsEmpty())
