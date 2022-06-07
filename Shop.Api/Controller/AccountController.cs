@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Shop.Api.Models.Account;
+using Shop.Domain.Users;
 using System.Security.Claims;
 
 namespace Shop.Api.Controller
@@ -11,25 +12,25 @@ namespace Shop.Api.Controller
         private readonly IWorkContext _workContext;
         private readonly IUserService _userService;
         private readonly ITokenService _tokenService;
-        private readonly IMessageService _messageService;
         private readonly IUserFieldService _userFieldService;
         private readonly ILocalizationService _localizationService;
         private readonly IAuthenticationService _authenticationService;
+        private readonly IMessageProviderService _messageProviderService;
         public AccountController(
             UserSetting userSetting,
             IWorkContext workContext,
             IUserService userService,
             ITokenService tokenService,
-            IMessageService messageService,
             IUserFieldService userFieldService,
             ILocalizationService localizationService,
-            IAuthenticationService authenticationService)
+            IAuthenticationService authenticationService,
+            IMessageProviderService messageProviderService)
         {
             _userSetting = userSetting;
             _workContext = workContext;
             _userService = userService;
             _tokenService = tokenService;
-            _messageService = messageService;
+            _messageProviderService = messageProviderService;
             _userFieldService = userFieldService;
             _localizationService = localizationService;
             _authenticationService = authenticationService;
@@ -75,20 +76,21 @@ namespace Shop.Api.Controller
             switch (_userSetting.RegisterType)
             {
                 case RegisterType.Standard:
-                    await _messageService.SendWelcomeMessageAsync(response.Data, language);
+                    await _messageProviderService.SendWelcomeMessageAsync(response.Data, language);
                     break;
 
                 case RegisterType.EmailValidation:
-                    List<Claim> claims = new() {
+                    List<Claim> claims = new()
+                    {
                         new Claim(ClaimTypes.NameIdentifier, response.Data.Id.ToString())
                     };
 
                     var token = _tokenService.GetActiveAccountToken(claims);
 
                     await _userFieldService.SaveFieldAsync(response.Data, token, SystemUserFieldName.ActiveAccountToken);
-                    var callbackUrl = Url.Action("ActiveAccount", "Account",new { token }, Url.ActionContext.HttpContext.Request.Scheme);
+                    var callbackUrl = Url.Action("ActiveAccount", "Account", new { token }, Url.ActionContext.HttpContext.Request.Scheme);
 
-                    await _messageService.SendActiveAccountMessageAsync(response.Data, language, callbackUrl);
+                    await _messageProviderService.SendActiveAccountMessageAsync(response.Data, language, callbackUrl);
                     break;
             }
 
@@ -106,7 +108,7 @@ namespace Shop.Api.Controller
                 return BadRequest(await _localizationService.GetResourceAsync(response.Message));
             }
 
-            await _messageService.SendWelcomeMessageAsync(response.Data, await _workContext.GetWorkingLanguageAsync());
+            await _messageProviderService.SendWelcomeMessageAsync(response.Data, await _workContext.GetWorkingLanguageAsync());
 
             return Ok(await _localizationService.GetResourceAsync(response.Message));
         }
@@ -117,7 +119,7 @@ namespace Shop.Api.Controller
         {
             var user = await _userService.GetUserByEmailAsync(email);
 
-            if(user == null || user.IsDelete || !user.IsActive)
+            if (user == null || user.IsDelete || !user.IsActive)
             {
                 return BadRequest(await _localizationService.GetResourceAsync("Account.RecoveryPassword.Error.EmailNotFound"));
             }
@@ -133,7 +135,7 @@ namespace Shop.Api.Controller
 
             var callbackUrl = Url.Action("RecoveryPasswordConfirm", "Account", new { token }, Url.ActionContext.HttpContext.Request.Scheme);
 
-            await _messageService.SendRecoveryPasswordMessageAsync(user, await _workContext.GetWorkingLanguageAsync(), callbackUrl);
+            await _messageProviderService.SendRecoveryPasswordMessageAsync(user, await _workContext.GetWorkingLanguageAsync(), callbackUrl);
 
             return NoContent();
         }
@@ -153,7 +155,7 @@ namespace Shop.Api.Controller
         {
             var response = await _authenticationService.RefreshTokenASync();
 
-            if(!response.Success)
+            if (!response.Success)
             {
                 return Unauthorized();
             }

@@ -5,16 +5,16 @@ namespace Shop.Application.Localization.Services
 {
     public interface ILanguageService : IAbstractService<Language>
     {
-        Task<IList<Language>> GetLanguagesAsync(bool includeHidden = true, bool isRtl = false);
-
         Task<Language> GetLanguageByCodeAsync(string code);
 
-        Task<Language> GetLanguageByIdAsync(int id);
+        Task<Language> GetLanguageByIdAsync(int id, bool tracked = false);
+
+        Task<IList<Language>> GetLanguagesAsync(bool includeHidden = true, bool isRtl = false, bool tracked = false);
 
         Task<Response<int>> InsertLanguageAsync(LanguageDto dto);
 
         Task<Response> UpdateLanguageAsync(LanguageDto dto);
 
-        Task<Response> DeleteLanguageAsync(int id);
+        Task<Response> DeleteLanguageAsync(Language language);
     }
 }                             

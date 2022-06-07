@@ -22,6 +22,663 @@ namespace Shop.Application.Infrastructure.Data.Migrations
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder, 1L, 1);
 
+            modelBuilder.Entity("Shop.Domain.Catalog.Brand", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
+
+                    b.Property<DateTime>("CreateUtc")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("Description")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<bool>("IsActive")
+                        .HasColumnType("bit");
+
+                    b.Property<bool>("IsDelete")
+                        .HasColumnType("bit");
+
+                    b.Property<string>("MetaDescription")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("MetaKeywords")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("MetaTitle")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Name")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int?>("PictureId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("ShortDescription")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime?>("UpdateUtc")
+                        .HasColumnType("datetime2");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("PictureId");
+
+                    b.ToTable("Brand");
+                });
+
+            modelBuilder.Entity("Shop.Domain.Catalog.Category", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
+
+                    b.Property<string>("BadgeStyle")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("BadgeText")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime>("CreateUtc")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("Description")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("DisplayOrder")
+                        .HasColumnType("int");
+
+                    b.Property<bool>("IsActive")
+                        .HasColumnType("bit");
+
+                    b.Property<bool>("IsDelete")
+                        .HasColumnType("bit");
+
+                    b.Property<bool>("IsInlcudeTopMenu")
+                        .HasColumnType("bit");
+
+                    b.Property<bool>("IsShowOnHomePage")
+                        .HasColumnType("bit");
+
+                    b.Property<string>("MetaDescription")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("MetaKeywords")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("MetaTitle")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Name")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int?>("ParentCategoryId")
+                        .HasColumnType("int");
+
+                    b.Property<int?>("PictureId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("ShortDescription")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime?>("UpdateUtc")
+                        .HasColumnType("datetime2");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("ParentCategoryId");
+
+                    b.HasIndex("PictureId");
+
+                    b.ToTable("Category");
+                });
+
+            modelBuilder.Entity("Shop.Domain.Catalog.CategoryBrand", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
+
+                    b.Property<int>("BrandId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("CategoryId")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("BrandId");
+
+                    b.HasIndex("CategoryId");
+
+                    b.ToTable("CategoryBrand");
+                });
+
+            modelBuilder.Entity("Shop.Domain.Catalog.Product", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
+
+                    b.Property<int>("ApprovedRatingSum")
+                        .HasColumnType("int");
+
+                    b.Property<int>("ApprovedTotalReviews")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime?>("AvaliableEndDateUtc")
+                        .HasColumnType("datetime2");
+
+                    b.Property<DateTime?>("AvaliableStartDateUtc")
+                        .HasColumnType("datetime2");
+
+                    b.Property<int?>("BrandId")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime>("CreateUtc")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("Description")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("DisplayOrder")
+                        .HasColumnType("int");
+
+                    b.Property<bool>("DisplayStockAvaliablity")
+                        .HasColumnType("bit");
+
+                    b.Property<bool>("DisplayStockQuality")
+                        .HasColumnType("bit");
+
+                    b.Property<string>("Gtin")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<decimal?>("Height")
+                        .HasPrecision(18, 2)
+                        .HasColumnType("decimal(18,2)");
+
+                    b.Property<bool>("IsActive")
+                        .HasColumnType("bit");
+
+                    b.Property<bool>("IsAllowForReview")
+                        .HasColumnType("bit");
+
+                    b.Property<bool>("IsAvaliableForOnline")
+                        .HasColumnType("bit");
+
+                    b.Property<bool>("IsAvaliableForOrder")
+                        .HasColumnType("bit");
+
+                    b.Property<bool>("IsCallForPrice")
+                        .HasColumnType("bit");
+
+                    b.Property<bool>("IsDelete")
+                        .HasColumnType("bit");
+
+                    b.Property<bool>("IsDisableBuyButton")
+                        .HasColumnType("bit");
+
+                    b.Property<bool>("IsDisableWishlistButton")
+                        .HasColumnType("bit");
+
+                    b.Property<bool>("IsFreeShipping")
+                        .HasColumnType("bit");
+
+                    b.Property<bool>("IsMarkAsNew")
+                        .HasColumnType("bit");
+
+                    b.Property<bool>("IsRecurring")
+                        .HasColumnType("bit");
+
+                    b.Property<bool>("IsShowOnHomePage")
+                        .HasColumnType("bit");
+
+                    b.Property<bool>("IsTaxExempt")
+                        .HasColumnType("bit");
+
+                    b.Property<DateTime?>("MarkAsNewEndDateUtc")
+                        .HasColumnType("datetime2");
+
+                    b.Property<DateTime?>("MarkAsNewStartDateUtc")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("MetaDescription")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("MetaKeywords")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("MetaTitle")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Name")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("NotApprovedRatingSum")
+                        .HasColumnType("int");
+
+                    b.Property<int>("NotApprovedTotalReviews")
+                        .HasColumnType("int");
+
+                    b.Property<int>("OrderMaxmimumQuality")
+                        .HasColumnType("int");
+
+                    b.Property<int>("OrderMinimumQuality")
+                        .HasColumnType("int");
+
+                    b.Property<decimal>("Price")
+                        .HasPrecision(18, 2)
+                        .HasColumnType("decimal(18,2)");
+
+                    b.Property<decimal>("PriceOnline")
+                        .HasPrecision(18, 2)
+                        .HasColumnType("decimal(18,2)");
+
+                    b.Property<string>("SKu")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("ShortDescription")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("StockQuality")
+                        .HasColumnType("int");
+
+                    b.Property<int?>("TaxId")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime?>("UpdateUtc")
+                        .HasColumnType("datetime2");
+
+                    b.Property<decimal?>("Weight")
+                        .HasPrecision(18, 2)
+                        .HasColumnType("decimal(18,2)");
+
+                    b.Property<decimal?>("Width")
+                        .HasPrecision(18, 2)
+                        .HasColumnType("decimal(18,2)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("BrandId");
+
+                    b.ToTable("Product");
+                });
+
+            modelBuilder.Entity("Shop.Domain.Catalog.ProductAttribute", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
+
+                    b.Property<string>("Description")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Name")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("ProductAttribute");
+                });
+
+            modelBuilder.Entity("Shop.Domain.Catalog.ProductCategory", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
+
+                    b.Property<int>("CategoryId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("ProductId")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("CategoryId");
+
+                    b.HasIndex("ProductId");
+
+                    b.ToTable("ProductCategory");
+                });
+
+            modelBuilder.Entity("Shop.Domain.Catalog.ProductPicture", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
+
+                    b.Property<int>("DisplayOrder")
+                        .HasColumnType("int");
+
+                    b.Property<int>("PictureId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("ProductId")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("PictureId");
+
+                    b.HasIndex("ProductId");
+
+                    b.ToTable("ProductPicture");
+                });
+
+            modelBuilder.Entity("Shop.Domain.Catalog.ProductSpecificationAttribute", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
+
+                    b.Property<int>("DisplayOrder")
+                        .HasColumnType("int");
+
+                    b.Property<bool>("IsAllowFiltering")
+                        .HasColumnType("bit");
+
+                    b.Property<bool>("IsShowOnProductPage")
+                        .HasColumnType("bit");
+
+                    b.Property<int>("ProductId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("SpecificationAttributeOptionId")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("ProductId");
+
+                    b.HasIndex("SpecificationAttributeOptionId");
+
+                    b.ToTable("ProductSpecificationAttribute");
+                });
+
+            modelBuilder.Entity("Shop.Domain.Catalog.ProductVariantAttrbiute", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
+
+                    b.Property<int>("ControlType")
+                        .HasColumnType("int");
+
+                    b.Property<int>("ControlTypeId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("DisplayOrder")
+                        .HasColumnType("int");
+
+                    b.Property<bool>("IsRequired")
+                        .HasColumnType("bit");
+
+                    b.Property<int>("ProductAttributeId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("ProductId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("TextPrompt")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("ProductAttributeId");
+
+                    b.HasIndex("ProductId");
+
+                    b.ToTable("ProductVariantAttrbiute");
+                });
+
+            modelBuilder.Entity("Shop.Domain.Catalog.ProductVariantAttributeValue", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
+
+                    b.Property<int>("DisplayOrder")
+                        .HasColumnType("int");
+
+                    b.Property<decimal>("HeightAdjustment")
+                        .HasPrecision(18, 2)
+                        .HasColumnType("decimal(18,2)");
+
+                    b.Property<bool>("IsPreSelected")
+                        .HasColumnType("bit");
+
+                    b.Property<int?>("PictureId")
+                        .HasColumnType("int");
+
+                    b.Property<decimal>("PriceAdjustment")
+                        .HasPrecision(18, 2)
+                        .HasColumnType("decimal(18,2)");
+
+                    b.Property<bool>("PriceAdjustmentUsePercentage")
+                        .HasColumnType("bit");
+
+                    b.Property<int?>("ProductId")
+                        .HasColumnType("int");
+
+                    b.Property<int?>("ProductVariantAttrbiuteId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("ProductVariantAttributeId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("Quality")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Value")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("VariantType")
+                        .HasColumnType("int");
+
+                    b.Property<int>("VariantTypeId")
+                        .HasColumnType("int");
+
+                    b.Property<decimal>("WeightAdjustment")
+                        .HasPrecision(18, 2)
+                        .HasColumnType("decimal(18,2)");
+
+                    b.Property<decimal>("WidthAdjustment")
+                        .HasPrecision(18, 2)
+                        .HasColumnType("decimal(18,2)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("PictureId");
+
+                    b.HasIndex("ProductId");
+
+                    b.HasIndex("ProductVariantAttrbiuteId");
+
+                    b.ToTable("ProductVariantAttributeValue");
+                });
+
+            modelBuilder.Entity("Shop.Domain.Catalog.RelatedProduct", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
+
+                    b.Property<int>("Product1Id")
+                        .HasColumnType("int");
+
+                    b.Property<int>("Product2Id")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("Product1Id");
+
+                    b.HasIndex("Product2Id");
+
+                    b.ToTable("RelatedProduct");
+                });
+
+            modelBuilder.Entity("Shop.Domain.Catalog.SpecificationAttribute", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
+
+                    b.Property<string>("Description")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("DisplayOrder")
+                        .HasColumnType("int");
+
+                    b.Property<bool>("IsAllowFilter")
+                        .HasColumnType("bit");
+
+                    b.Property<bool>("IsShowOnHomePage")
+                        .HasColumnType("bit");
+
+                    b.Property<string>("Name")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("SpecificationAttributeGroupId")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("SpecificationAttributeGroupId");
+
+                    b.ToTable("SpecificationAttribute");
+                });
+
+            modelBuilder.Entity("Shop.Domain.Catalog.SpecificationAttributeGroup", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
+
+                    b.Property<int>("DisplayOrder")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Name")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("SpecificationAttributeGroup");
+                });
+
+            modelBuilder.Entity("Shop.Domain.Catalog.SpecificationAttributeOption", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
+
+                    b.Property<string>("Color")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("DisplayOrder")
+                        .HasColumnType("int");
+
+                    b.Property<int?>("PictureId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("SpecificationAttributeId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Value")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("PictureId");
+
+                    b.HasIndex("SpecificationAttributeId");
+
+                    b.ToTable("SpecificationAttributeOption");
+                });
+
+            modelBuilder.Entity("Shop.Domain.Catalog.StockQuantityHistory", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
+
+                    b.Property<int>("AdjumentQuality")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime>("CreateUtc")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("Note")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("ProductId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("UserId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("WareHouseId")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("ProductId");
+
+                    b.HasIndex("UserId");
+
+                    b.HasIndex("WareHouseId");
+
+                    b.ToTable("StockQuantityHistory");
+                });
+
+            modelBuilder.Entity("Shop.Domain.Catalog.WareHouse", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
+
+                    b.Property<string>("Name")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("WareHouse");
+                });
+
             modelBuilder.Entity("Shop.Domain.Configuration.Setting", b =>
                 {
                     b.Property<int>("Id")
@@ -167,6 +824,79 @@ namespace Shop.Application.Infrastructure.Data.Migrations
                     b.HasIndex("LanguageId");
 
                     b.ToTable("LocalizedEntity");
+                });
+
+            modelBuilder.Entity("Shop.Domain.Media.Picture", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
+
+                    b.Property<string>("Alt")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime>("CreateUtc")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("Extension")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int?>("Height")
+                        .HasColumnType("int");
+
+                    b.Property<string>("MimeType")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Name")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<long?>("Size")
+                        .HasColumnType("bigint");
+
+                    b.Property<string>("Title")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime?>("UpdateUtc")
+                        .HasColumnType("datetime2");
+
+                    b.Property<int?>("Width")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Picture");
+                });
+
+            modelBuilder.Entity("Shop.Domain.Seo.Slug", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
+
+                    b.Property<string>("EntityGroup")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("EntityId")
+                        .HasColumnType("int");
+
+                    b.Property<bool>("IsActive")
+                        .HasColumnType("bit");
+
+                    b.Property<int?>("LanguageId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Value")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("LanguageId");
+
+                    b.ToTable("Slug");
                 });
 
             modelBuilder.Entity("Shop.Domain.Users.Role", b =>
@@ -337,6 +1067,237 @@ namespace Shop.Application.Infrastructure.Data.Migrations
                     b.ToTable("UserRole");
                 });
 
+            modelBuilder.Entity("Shop.Domain.Catalog.Brand", b =>
+                {
+                    b.HasOne("Shop.Domain.Media.Picture", "Picture")
+                        .WithMany()
+                        .HasForeignKey("PictureId")
+                        .OnDelete(DeleteBehavior.Restrict);
+
+                    b.Navigation("Picture");
+                });
+
+            modelBuilder.Entity("Shop.Domain.Catalog.Category", b =>
+                {
+                    b.HasOne("Shop.Domain.Catalog.Category", "Parent")
+                        .WithMany("SubCategories")
+                        .HasForeignKey("ParentCategoryId")
+                        .OnDelete(DeleteBehavior.Restrict);
+
+                    b.HasOne("Shop.Domain.Media.Picture", "Picture")
+                        .WithMany()
+                        .HasForeignKey("PictureId")
+                        .OnDelete(DeleteBehavior.Restrict);
+
+                    b.Navigation("Parent");
+
+                    b.Navigation("Picture");
+                });
+
+            modelBuilder.Entity("Shop.Domain.Catalog.CategoryBrand", b =>
+                {
+                    b.HasOne("Shop.Domain.Catalog.Brand", "Brand")
+                        .WithMany("Cateogries")
+                        .HasForeignKey("BrandId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.HasOne("Shop.Domain.Catalog.Category", "Category")
+                        .WithMany("Brands")
+                        .HasForeignKey("CategoryId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.Navigation("Brand");
+
+                    b.Navigation("Category");
+                });
+
+            modelBuilder.Entity("Shop.Domain.Catalog.Product", b =>
+                {
+                    b.HasOne("Shop.Domain.Catalog.Brand", "Brand")
+                        .WithMany()
+                        .HasForeignKey("BrandId")
+                        .OnDelete(DeleteBehavior.Restrict);
+
+                    b.Navigation("Brand");
+                });
+
+            modelBuilder.Entity("Shop.Domain.Catalog.ProductCategory", b =>
+                {
+                    b.HasOne("Shop.Domain.Catalog.Category", "Category")
+                        .WithMany("Products")
+                        .HasForeignKey("CategoryId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.HasOne("Shop.Domain.Catalog.Product", "Product")
+                        .WithMany("Categories")
+                        .HasForeignKey("ProductId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.Navigation("Category");
+
+                    b.Navigation("Product");
+                });
+
+            modelBuilder.Entity("Shop.Domain.Catalog.ProductPicture", b =>
+                {
+                    b.HasOne("Shop.Domain.Media.Picture", "Picture")
+                        .WithMany()
+                        .HasForeignKey("PictureId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.HasOne("Shop.Domain.Catalog.Product", "Product")
+                        .WithMany("Pictures")
+                        .HasForeignKey("ProductId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.Navigation("Picture");
+
+                    b.Navigation("Product");
+                });
+
+            modelBuilder.Entity("Shop.Domain.Catalog.ProductSpecificationAttribute", b =>
+                {
+                    b.HasOne("Shop.Domain.Catalog.Product", "Product")
+                        .WithMany("ProductSpecificationAttributes")
+                        .HasForeignKey("ProductId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.HasOne("Shop.Domain.Catalog.SpecificationAttributeOption", "SpecificationAttributeOption")
+                        .WithMany()
+                        .HasForeignKey("SpecificationAttributeOptionId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.Navigation("Product");
+
+                    b.Navigation("SpecificationAttributeOption");
+                });
+
+            modelBuilder.Entity("Shop.Domain.Catalog.ProductVariantAttrbiute", b =>
+                {
+                    b.HasOne("Shop.Domain.Catalog.ProductAttribute", "ProductAttribute")
+                        .WithMany()
+                        .HasForeignKey("ProductAttributeId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.HasOne("Shop.Domain.Catalog.Product", "Product")
+                        .WithMany("ProductVariantAttrbiutes")
+                        .HasForeignKey("ProductId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.Navigation("Product");
+
+                    b.Navigation("ProductAttribute");
+                });
+
+            modelBuilder.Entity("Shop.Domain.Catalog.ProductVariantAttributeValue", b =>
+                {
+                    b.HasOne("Shop.Domain.Media.Picture", "Picture")
+                        .WithMany()
+                        .HasForeignKey("PictureId")
+                        .OnDelete(DeleteBehavior.Restrict);
+
+                    b.HasOne("Shop.Domain.Catalog.Product", "Product")
+                        .WithMany()
+                        .HasForeignKey("ProductId")
+                        .OnDelete(DeleteBehavior.Restrict);
+
+                    b.HasOne("Shop.Domain.Catalog.ProductVariantAttrbiute", "ProductVariantAttrbiute")
+                        .WithMany("ProductVariantAttributeValues")
+                        .HasForeignKey("ProductVariantAttrbiuteId")
+                        .OnDelete(DeleteBehavior.Restrict);
+
+                    b.Navigation("Picture");
+
+                    b.Navigation("Product");
+
+                    b.Navigation("ProductVariantAttrbiute");
+                });
+
+            modelBuilder.Entity("Shop.Domain.Catalog.RelatedProduct", b =>
+                {
+                    b.HasOne("Shop.Domain.Catalog.Product", "Product1")
+                        .WithMany()
+                        .HasForeignKey("Product1Id")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.HasOne("Shop.Domain.Catalog.Product", "Product2")
+                        .WithMany()
+                        .HasForeignKey("Product2Id")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.Navigation("Product1");
+
+                    b.Navigation("Product2");
+                });
+
+            modelBuilder.Entity("Shop.Domain.Catalog.SpecificationAttribute", b =>
+                {
+                    b.HasOne("Shop.Domain.Catalog.SpecificationAttributeGroup", "SpecificationAttributeGroup")
+                        .WithMany("SpecificationAttributes")
+                        .HasForeignKey("SpecificationAttributeGroupId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.Navigation("SpecificationAttributeGroup");
+                });
+
+            modelBuilder.Entity("Shop.Domain.Catalog.SpecificationAttributeOption", b =>
+                {
+                    b.HasOne("Shop.Domain.Media.Picture", "Picture")
+                        .WithMany()
+                        .HasForeignKey("PictureId")
+                        .OnDelete(DeleteBehavior.Restrict);
+
+                    b.HasOne("Shop.Domain.Catalog.SpecificationAttribute", "SpecificationAttribute")
+                        .WithMany("SpecificationAttributeOptions")
+                        .HasForeignKey("SpecificationAttributeId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.Navigation("Picture");
+
+                    b.Navigation("SpecificationAttribute");
+                });
+
+            modelBuilder.Entity("Shop.Domain.Catalog.StockQuantityHistory", b =>
+                {
+                    b.HasOne("Shop.Domain.Catalog.Product", "Product")
+                        .WithMany()
+                        .HasForeignKey("ProductId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.HasOne("Shop.Domain.Users.User", "User")
+                        .WithMany()
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.HasOne("Shop.Domain.Catalog.WareHouse", "WareHouse")
+                        .WithMany()
+                        .HasForeignKey("WareHouseId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.Navigation("Product");
+
+                    b.Navigation("User");
+
+                    b.Navigation("WareHouse");
+                });
+
             modelBuilder.Entity("Shop.Domain.Localization.Language", b =>
                 {
                     b.HasOne("Shop.Domain.Directory.Currency", "Currency")
@@ -359,6 +1320,16 @@ namespace Shop.Application.Infrastructure.Data.Migrations
                 });
 
             modelBuilder.Entity("Shop.Domain.Localization.LocalizedEntity", b =>
+                {
+                    b.HasOne("Shop.Domain.Localization.Language", "Language")
+                        .WithMany()
+                        .HasForeignKey("LanguageId")
+                        .OnDelete(DeleteBehavior.Restrict);
+
+                    b.Navigation("Language");
+                });
+
+            modelBuilder.Entity("Shop.Domain.Seo.Slug", b =>
                 {
                     b.HasOne("Shop.Domain.Localization.Language", "Language")
                         .WithMany()
@@ -417,6 +1388,46 @@ namespace Shop.Application.Infrastructure.Data.Migrations
                     b.Navigation("Role");
 
                     b.Navigation("User");
+                });
+
+            modelBuilder.Entity("Shop.Domain.Catalog.Brand", b =>
+                {
+                    b.Navigation("Cateogries");
+                });
+
+            modelBuilder.Entity("Shop.Domain.Catalog.Category", b =>
+                {
+                    b.Navigation("Brands");
+
+                    b.Navigation("Products");
+
+                    b.Navigation("SubCategories");
+                });
+
+            modelBuilder.Entity("Shop.Domain.Catalog.Product", b =>
+                {
+                    b.Navigation("Categories");
+
+                    b.Navigation("Pictures");
+
+                    b.Navigation("ProductSpecificationAttributes");
+
+                    b.Navigation("ProductVariantAttrbiutes");
+                });
+
+            modelBuilder.Entity("Shop.Domain.Catalog.ProductVariantAttrbiute", b =>
+                {
+                    b.Navigation("ProductVariantAttributeValues");
+                });
+
+            modelBuilder.Entity("Shop.Domain.Catalog.SpecificationAttribute", b =>
+                {
+                    b.Navigation("SpecificationAttributeOptions");
+                });
+
+            modelBuilder.Entity("Shop.Domain.Catalog.SpecificationAttributeGroup", b =>
+                {
+                    b.Navigation("SpecificationAttributes");
                 });
 
             modelBuilder.Entity("Shop.Domain.Users.Role", b =>

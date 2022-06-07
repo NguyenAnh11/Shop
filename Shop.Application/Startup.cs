@@ -12,9 +12,13 @@
                 .AddSecurityModuleService()
                 .AddUsersModuleService()
                 .AddAuthenticationModuleService()
-                .AddMessageModuleService();
+                .AddMessageModuleService()
+                .AddSeoModuleService()
+                .AddCatalogModuleService()
+                .AddConfigurationModuleService()
+                .AddMediaModuleService();
 
-            services.AddScoped<IWorkContext, WebWorkContext>();
+            services.AddScoped<IWorkContext, WorkContext>();
               
             return services;
         }

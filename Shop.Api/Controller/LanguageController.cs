@@ -53,7 +53,12 @@ namespace Shop.Api.Controller
         [Route("/languages/{id}")]
         public async Task<IActionResult> DeleteLanguage(int id)
         {
-            var response = await _languageService.DeleteLanguageAsync(id);
+            var language = await _languageService.GetLanguageByIdAsync(id);
+
+            if (language == null)
+                return NotFound();
+
+            var response = await _languageService.DeleteLanguageAsync(language);
 
             if (!response.Success)
                 return BadRequest(await _localizationService.GetResourceAsync(response.Message));
@@ -107,7 +112,12 @@ namespace Shop.Api.Controller
         [Route("/languages/resources/{id}")]
         public async Task<IActionResult> DeleteResource(int id)
         {
-            await _languageService.DeleteLanguageAsync(id);
+            var resource = await _localizationService.GetResourceByIdAsync(id);
+
+            if (resource == null)
+                return NotFound();
+
+            await _localizationService.DeleteResourceAsync(resource);
 
             return NoContent();
         }

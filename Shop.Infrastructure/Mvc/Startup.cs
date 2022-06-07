@@ -10,7 +10,7 @@ namespace Shop.Infrastructure.Mvc
             services
                 .AddControllersWithViews(option =>
                 {
-                    option.Filters.Add(new ExceptionFilter());
+                    option.Filters.Add(new ExceptionAttribute());
                 })
                 .ConfigureApiBehaviorOptions(option =>
                 {

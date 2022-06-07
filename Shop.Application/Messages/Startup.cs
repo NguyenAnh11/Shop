@@ -6,7 +6,7 @@ namespace Shop.Application.Messages
     {
         public static IServiceCollection AddMessageModuleService(this IServiceCollection services)
         {
-            services.AddScoped<IMessageService, MessageService>();
+            services.AddScoped<IMessageProviderService, MessageProviderService>();
             services.AddScoped<IViewRenderService, ViewRenderService>();
 
             return services;

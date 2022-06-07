@@ -2,6 +2,6 @@
 {
     public interface IEmailService
     {
-        Task SendEmailAsync(IList<string> toEmails, string subject, string body);
+        Task SendAsync(IList<string> toEmails, string subject, string body);
     }
 }

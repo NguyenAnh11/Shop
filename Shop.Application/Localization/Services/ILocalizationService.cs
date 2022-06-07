@@ -13,14 +13,14 @@ namespace Shop.Application.Localization.Services
 
         Task<string> GetResourceAsync(string name, int langaugeId);
 
-        Task<string> GetLocalizedEnumAsync<TEnum>(TEnum enumValue) where TEnum : struct, ILocalizedEnum;
+        Task<string> GetLocalizedEnumAsync<TEnum>(TEnum enumValue) where TEnum : struct;
 
-        Task<string> GetLocalizedEnumAsync<TEnum>(TEnum enumValue, int languageId) where TEnum : struct, ILocalizedEnum;
+        Task<string> GetLocalizedEnumAsync<TEnum>(TEnum enumValue, int languageId) where TEnum : struct;
 
         Task<Response<int>> InsertResourceAsync(LocaleResourceDto dto);
 
         Task<Response> UpdateResourceAsync(LocaleResourceDto dto);
 
-        Task<Response> DeleteResourceAsync(int id);
+        Task<Response> DeleteResourceAsync(LocaleStringResource resource);
     }
 }

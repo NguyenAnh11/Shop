@@ -5,6 +5,7 @@ namespace Shop.Application.Localization.Services
 {
     public class LocalizedEntityService : AbstractService<LocalizedEntity>, ILocalizedEntityService
     {
+        private readonly IWorkContext _workContext;
         public LocalizedEntityService(ShopDbContext context) : base(context)
         {
         }
@@ -36,7 +37,7 @@ namespace Shop.Application.Localization.Services
             languageId = languageId switch
             {
                 0 => null,
-                null => 1,
+                null => (await _workContext.GetWorkingLanguageAsync()).Id,
                 _ => languageId
             };
 
@@ -61,15 +62,13 @@ namespace Shop.Application.Localization.Services
             languageId = languageId switch
             {
                 0 => null,
-                null => 1,
+                null => (await _workContext.GetWorkingLanguageAsync()).Id,
                 _ => languageId
             };
 
             var lp = await GetLocalizedEntityAsync(entityId, entityGroup, entityKey, languageId);
 
-            using var transaction = await _context.Database.BeginTransactionAsync();
-
-            if (lp != null)
+            if(lp != null)
             {
                 if (entityValue.IsEmpty())
                     Table.Remove(lp);
@@ -97,7 +96,10 @@ namespace Shop.Application.Localization.Services
                 await Table.AddAsync(lp);
             }
 
+            using var transaction = await _context.Database.BeginTransactionAsync();
+
             await _context.SaveChangesAsync();
+
             await transaction.CommitAsync();
         }
 

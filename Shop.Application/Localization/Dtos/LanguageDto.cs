@@ -1,7 +1,8 @@
 ﻿namespace Shop.Application.Localization.Dtos
 {
-    public class LanguageDto : BaseEntityDto
+    public class LanguageDto
     {
+        public int Id { get; set; }
         public string Name { get; set; }
         public bool IsRtl { get; set; }
         public bool IsActive { get; set; }

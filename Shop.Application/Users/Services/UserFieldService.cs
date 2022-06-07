@@ -29,42 +29,37 @@ namespace Shop.Application.Users.Services
             Guard.IsNotNull(user, nameof(user));
             Guard.IsNotNullOrEmpty(field, nameof(field));
 
-            var fieldValue = value.ChangeType<string>();
+            var valueStr = value.ChangeType<string>();
 
             var uf = await GetUserFieldAsync(user.Id, field);
 
             if(uf != null)
             {
-                if (fieldValue.IsEmpty())
+                if (valueStr.IsEmpty())
                     Table.Remove(uf);
 
-                else if (uf.Value.Equals(fieldValue))
+                else if (valueStr.Equals(uf.Value))
                     return;
 
                 else
-                {
-                    uf.Value = fieldValue;
-                    Table.Update(uf);
-                }
+                    uf.Value = valueStr;
             }
             else
             {
-                if (field.IsEmpty())
+                if (valueStr.IsEmpty())
                     return;
 
-                await Table.AddAsync(new UserFied
+                uf = new UserFied
                 {
                     UserId = user.Id,
                     Field = field,
-                    Value = fieldValue
-                });
+                    Value = valueStr
+                };
+
+                await Table.AddAsync(uf);
             }
 
-            using var transaction = await _context.Database.BeginTransactionAsync();
-
             await _context.SaveChangesAsync();
-            await transaction.CommitAsync();
-
         }
     }
 }

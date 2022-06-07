@@ -2,9 +2,9 @@
 
 namespace Shop.Infrastructure.Mvc.Filters
 {
-    public class ExceptionFilter : IExceptionFilter
+    public class ExceptionAttribute : ExceptionFilterAttribute
     {
-        public void OnException(ExceptionContext context)
+        public override void OnException(ExceptionContext context)
         {
             var exception = context.Exception;
 

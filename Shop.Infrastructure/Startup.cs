@@ -25,7 +25,8 @@ namespace Shop.Infrastructure
             services
                 .AddCustomCors()
                 .AddCustomMvc()
-                .AddMailingModuleService();
+                .AddMailingModuleService()
+                .AddStorageModuleService();
 
             return services;
         }

@@ -3,10 +3,10 @@ using Shop.Application.Localization.Services;
 
 namespace Shop.Application
 {
-    public class WebWorkContext : IWorkContext
+    public class WorkContext : IWorkContext
     {
         private readonly ILanguageService _languageService;
-        public WebWorkContext(ILanguageService languageService)
+        public WorkContext(ILanguageService languageService)
         {
             _languageService = languageService;
         }

@@ -3,7 +3,7 @@ using Shop.Domain.Localization;
 
 namespace Shop.Application.Messages.Services
 {
-    public interface IMessageService
+    public interface IMessageProviderService
     {
         Task SendWelcomeMessageAsync(User user, Language language);
 

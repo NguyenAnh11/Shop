@@ -13,7 +13,7 @@ namespace Shop.Infrastructure.Mailing.Stmp
             _stmpConfig = Singleton<AppConfig>.Instance.Get<StmpConfig>();
         }
 
-        public async Task SendEmailAsync(IList<string> toEmails, string subject, string body)
+        public async Task SendAsync(IList<string> toEmails, string subject, string body)
         {
             Guard.IsNotNullOrEmpty(body, nameof(body));
             Guard.IsNotNull(toEmails, nameof(toEmails));

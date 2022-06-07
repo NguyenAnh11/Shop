@@ -1,4 +1,4 @@
-﻿namespace Shop.Application.Users
+﻿namespace Shop.Domain.Users
 {
     public static class SystemRoleName
     {

@@ -40,11 +40,11 @@ namespace Shop.Application.Localization.Services
             => (await GetResourceByNameAsync(name, langaugeId))?.Value ?? name;
 
         public async Task<string> GetLocalizedEnumAsync<TEnum>(TEnum enumValue)
-            where TEnum : struct, ILocalizedEnum
+            where TEnum : struct
             => await GetLocalizedEnumAsync(enumValue, (await _workContext.GetWorkingLanguageAsync()).Id);
 
         public async Task<string> GetLocalizedEnumAsync<TEnum>(TEnum enumValue, int languageId)
-            where TEnum : struct, ILocalizedEnum
+            where TEnum : struct
         {
             if (!typeof(TEnum).IsEnum)
                 throw new InvalidTypeException();
@@ -126,12 +126,9 @@ namespace Shop.Application.Localization.Services
             return Response.Ok();
         }
 
-        public async Task<Response> DeleteResourceAsync(int id)
+        public async Task<Response> DeleteResourceAsync(LocaleStringResource resource)
         {
-            var resource = await Table.FindByIdAsync(id);
-
-            if (resource == null)
-                throw new NotFoundException();
+            Guard.IsNotNull(resource, nameof(resource));
 
             using var transaction = await _context.Database.BeginTransactionAsync();
 
