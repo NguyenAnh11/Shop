@@ -6,11 +6,11 @@ namespace Shop.Api.Controller
     public class LanguageController : ControllerBase
     {
         private readonly ILanguageService _languageService;
-        private readonly ILocalizationService _localizationService;
-        public LanguageController(ILanguageService languageService, ILocalizationService localizationService)
+        private readonly ITranslationService _translationService;
+        public LanguageController(ILanguageService languageService, ITranslationService translationService)
         {
             _languageService = languageService;
-            _localizationService = localizationService;
+            _translationService = translationService;
         }
 
         [HttpGet]
@@ -29,7 +29,7 @@ namespace Shop.Api.Controller
             var response = await _languageService.InsertLanguageAsync(dto);
 
             if (!response.Success)
-                return BadRequest(await _localizationService.GetResourceAsync(response.Message));
+                return BadRequest(await _translationService.GetResourceAsync(response.Message));
 
             return CreatedAtAction(nameof(GetById), new { id = response.Data }, response.Data);
         }
@@ -44,7 +44,7 @@ namespace Shop.Api.Controller
             var response = await _languageService.UpdateLanguageAsync(dto);
 
             if (!response.Success)
-                return BadRequest(await _localizationService.GetResourceAsync(response.Message));
+                return BadRequest(await _translationService.GetResourceAsync(response.Message));
 
             return NoContent();
         }
@@ -61,7 +61,7 @@ namespace Shop.Api.Controller
             var response = await _languageService.DeleteLanguageAsync(language);
 
             if (!response.Success)
-                return BadRequest(await _localizationService.GetResourceAsync(response.Message));
+                return BadRequest(await _translationService.GetResourceAsync(response.Message));
 
             return NoContent();
         }
@@ -70,7 +70,7 @@ namespace Shop.Api.Controller
         [Route("/languages/resources/{id}")]
         public async Task<IActionResult> GetResourceById(int id)
         {
-            var model = await _localizationService.GetResourceByIdAsync(id);
+            var model = await _translationService.GetResourceByIdAsync(id);
 
             return Ok(model);   
         }
@@ -82,10 +82,10 @@ namespace Shop.Api.Controller
             if (languageId != dto.LanguageId)
                 return BadRequest();
 
-            var response = await _localizationService.InsertResourceAsync(dto);
+            var response = await _translationService.InsertResourceAsync(dto);
 
             if (!response.Success)
-                return BadRequest(await _localizationService.GetResourceAsync(response.Message));
+                return BadRequest(await _translationService.GetResourceAsync(response.Message));
 
             return CreatedAtAction(nameof(GetResourceById), new { id = response.Data }, response.Data);
         }
@@ -100,10 +100,10 @@ namespace Shop.Api.Controller
             if (id != dto.Id)
                 return BadRequest();
 
-            var response = await _localizationService.UpdateResourceAsync(dto);
+            var response = await _translationService.UpdateResourceAsync(dto);
 
             if (!response.Success)
-                return BadRequest(await _localizationService.GetResourceAsync(response.Message));
+                return BadRequest(await _translationService.GetResourceAsync(response.Message));
 
             return NoContent();
         }
@@ -112,12 +112,12 @@ namespace Shop.Api.Controller
         [Route("/languages/resources/{id}")]
         public async Task<IActionResult> DeleteResource(int id)
         {
-            var resource = await _localizationService.GetResourceByIdAsync(id);
+            var resource = await _translationService.GetResourceByIdAsync(id);
 
             if (resource == null)
                 return NotFound();
 
-            await _localizationService.DeleteResourceAsync(resource);
+            await _translationService.DeleteResourceAsync(resource);
 
             return NoContent();
         }

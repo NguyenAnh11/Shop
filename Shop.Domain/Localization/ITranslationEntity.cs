@@ -1,6 +1,6 @@
 ﻿namespace Shop.Domain.Localization
 {
-    public interface ILocalizedEntity
+    public interface ITranslationEntity
     {
     }
 }

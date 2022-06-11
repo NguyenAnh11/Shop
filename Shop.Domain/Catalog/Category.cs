@@ -2,10 +2,11 @@
 using Shop.Domain.Seo;
 using Shop.SharedKernel;
 using Shop.SharedKernel.Interfaces;
+using Shop.Domain.Localization;
 
 namespace Shop.Domain.Catalog
 {
-    public class Category : BaseEntity, ISoftDelete, IClock, ISlugSupported, IActive
+    public class Category : BaseEntity, ISoftDelete, IClock, ISlugSupported, IActive, ITranslationEntity
     {
         public string Name { get; set; }
         public string Description { get; set; }
@@ -19,15 +20,12 @@ namespace Shop.Domain.Catalog
         public Picture Picture { get; set; }
         public int? ParentCategoryId { get; set; }
         public Category Parent { get; set; }    
-        public string BadgeText { get; set; }
-        public string BadgeStyle { get; set; }
         public DateTime CreateUtc { get; set; }
         public DateTime? UpdateUtc { get; set; }
         public string MetaTitle { get; set; }
         public string MetaKeywords { get; set; }
         public string MetaDescription { get; set; }
         public IList<Category> SubCategories { get; set; } = new List<Category>();
-        public IList<CategoryBrand> Brands { get; set; } = new List<CategoryBrand>();
         public IList<ProductCategory> Products { get; set; } = new List<ProductCategory>();
     }
 }

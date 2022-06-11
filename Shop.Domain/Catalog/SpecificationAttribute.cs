@@ -3,7 +3,7 @@ using Shop.Domain.Localization;
 
 namespace Shop.Domain.Catalog
 {
-    public class SpecificationAttribute : BaseEntity, ILocalizedEntity
+    public class SpecificationAttribute : BaseEntity, ITranslationEntity
     {
         public string Name { get; set; }
         public string Description { get; set; } 

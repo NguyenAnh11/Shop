@@ -36,8 +36,11 @@ namespace Shop.Application.Infrastructure.Data
             {
                 relationship.DeleteBehavior = DeleteBehavior.Restrict;
             }
-
+            
             modelBuilder.ApplyConfigurationsFromAssembly(typeof(ShopDbContext).Assembly);
+
+            //seed data
+            modelBuilder.SeedData();
         }
 
         public override Task<int> SaveChangesAsync(bool acceptAllChangesOnSuccess, CancellationToken cancellationToken = default)

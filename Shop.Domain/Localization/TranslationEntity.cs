@@ -2,7 +2,7 @@
 
 namespace Shop.Domain.Localization
 {
-    public class LocalizedEntity : BaseEntity
+    public class TranslationEntity : BaseEntity
     {
         public int EntityId { get; set; }
         public string EntityGroup { get; set; }

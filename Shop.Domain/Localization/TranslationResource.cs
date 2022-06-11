@@ -2,7 +2,7 @@
 
 namespace Shop.Domain.Localization
 {
-    public class LocaleStringResource : BaseEntity
+    public class TranslationResource : BaseEntity
     {
         public string Name { get; set; }
         public string Value { get; set; }

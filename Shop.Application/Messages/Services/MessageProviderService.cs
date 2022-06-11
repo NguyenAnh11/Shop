@@ -9,16 +9,16 @@ namespace Shop.Application.Messages.Services
     {
         private readonly IEmailService _emailService;
         private readonly IViewRenderService _viewRenderService;
-        private readonly ILocalizationService _localizationService;
+        private readonly ITranslationService _translationService;
 
         public MessageProviderService(
             IEmailService emailService,
             IViewRenderService viewRenderService,
-            ILocalizationService localizationService)
+            ITranslationService translationService)
         {
             _emailService = emailService;
             _viewRenderService = viewRenderService;
-            _localizationService = localizationService;
+            _translationService = translationService;
         }
 
         protected static string BuildViewPath(string code, string viewName)
@@ -34,7 +34,7 @@ namespace Shop.Application.Messages.Services
 
             var body = await _viewRenderService.RenderToStringAsync(viewPath, model);
 
-            await _emailService.SendAsync(new List<string> { user.Email }, await _localizationService.GetResourceAsync(subject, language.Id), body);
+            await _emailService.SendAsync(new List<string> { user.Email }, await _translationService.GetResourceAsync(subject, language.Id), body);
         }
 
         protected async Task SendMessageAsync(User user, Language language, string viewName, string subject)
@@ -47,7 +47,7 @@ namespace Shop.Application.Messages.Services
 
             var body = await _viewRenderService.RenderToStringAsync(viewPath);
 
-            await _emailService.SendAsync(new List<string> { user.Email }, await _localizationService.GetResourceAsync(subject, language.Id), body);
+            await _emailService.SendAsync(new List<string> { user.Email }, await _translationService.GetResourceAsync(subject, language.Id), body);
         }
 
         public async Task SendActiveAccountMessageAsync(User user, Language language, string link)

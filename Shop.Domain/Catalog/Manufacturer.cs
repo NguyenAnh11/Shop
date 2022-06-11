@@ -5,7 +5,7 @@ using Shop.Domain.Media;
 
 namespace Shop.Domain.Catalog
 {
-    public class Brand: BaseEntity, ISoftDelete, IClock, ISlugSupported, IActive
+    public class Manufacturer: BaseEntity, ISoftDelete, IClock, ISlugSupported, IActive
     {
         public string Name { get; set; }
         public string Description { get; set; }
@@ -19,6 +19,6 @@ namespace Shop.Domain.Catalog
         public string MetaTitle { get; set; }
         public string MetaKeywords { get; set; }
         public string MetaDescription { get; set; }
-        public IList<CategoryBrand> Cateogries { get; set; } = new List<CategoryBrand>();
+        public IList<Product> Products { get; set; } = new List<Product>();
     }
 }

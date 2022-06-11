@@ -153,35 +153,6 @@ namespace Shop.Application.Infrastructure.Data.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "Brand",
-                columns: table => new
-                {
-                    Id = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    Name = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    Description = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    ShortDescription = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    IsDelete = table.Column<bool>(type: "bit", nullable: false),
-                    IsActive = table.Column<bool>(type: "bit", nullable: false),
-                    PictureId = table.Column<int>(type: "int", nullable: true),
-                    CreateUtc = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    UpdateUtc = table.Column<DateTime>(type: "datetime2", nullable: true),
-                    MetaTitle = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    MetaKeywords = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    MetaDescription = table.Column<string>(type: "nvarchar(max)", nullable: true)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Brand", x => x.Id);
-                    table.ForeignKey(
-                        name: "FK_Brand_Picture_PictureId",
-                        column: x => x.PictureId,
-                        principalTable: "Picture",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
-                });
-
-            migrationBuilder.CreateTable(
                 name: "Category",
                 columns: table => new
                 {
@@ -197,8 +168,6 @@ namespace Shop.Application.Infrastructure.Data.Migrations
                     IsShowOnHomePage = table.Column<bool>(type: "bit", nullable: false),
                     PictureId = table.Column<int>(type: "int", nullable: true),
                     ParentCategoryId = table.Column<int>(type: "int", nullable: true),
-                    BadgeText = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    BadgeStyle = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     CreateUtc = table.Column<DateTime>(type: "datetime2", nullable: false),
                     UpdateUtc = table.Column<DateTime>(type: "datetime2", nullable: true),
                     MetaTitle = table.Column<string>(type: "nvarchar(max)", nullable: true),
@@ -216,6 +185,35 @@ namespace Shop.Application.Infrastructure.Data.Migrations
                         onDelete: ReferentialAction.Restrict);
                     table.ForeignKey(
                         name: "FK_Category_Picture_PictureId",
+                        column: x => x.PictureId,
+                        principalTable: "Picture",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Manufacturer",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    Name = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    Description = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    ShortDescription = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    IsDelete = table.Column<bool>(type: "bit", nullable: false),
+                    IsActive = table.Column<bool>(type: "bit", nullable: false),
+                    PictureId = table.Column<int>(type: "int", nullable: true),
+                    CreateUtc = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    UpdateUtc = table.Column<DateTime>(type: "datetime2", nullable: true),
+                    MetaTitle = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    MetaKeywords = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    MetaDescription = table.Column<string>(type: "nvarchar(max)", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Manufacturer", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Manufacturer_Picture_PictureId",
                         column: x => x.PictureId,
                         principalTable: "Picture",
                         principalColumn: "Id",
@@ -387,7 +385,7 @@ namespace Shop.Application.Infrastructure.Data.Migrations
                     Height = table.Column<decimal>(type: "decimal(18,2)", precision: 18, scale: 2, nullable: true),
                     Width = table.Column<decimal>(type: "decimal(18,2)", precision: 18, scale: 2, nullable: true),
                     Weight = table.Column<decimal>(type: "decimal(18,2)", precision: 18, scale: 2, nullable: true),
-                    BrandId = table.Column<int>(type: "int", nullable: true),
+                    ManufacturerId = table.Column<int>(type: "int", nullable: true),
                     AvaliableStartDateUtc = table.Column<DateTime>(type: "datetime2", nullable: true),
                     AvaliableEndDateUtc = table.Column<DateTime>(type: "datetime2", nullable: true),
                     CreateUtc = table.Column<DateTime>(type: "datetime2", nullable: false),
@@ -400,35 +398,9 @@ namespace Shop.Application.Infrastructure.Data.Migrations
                 {
                     table.PrimaryKey("PK_Product", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_Product_Brand_BrandId",
-                        column: x => x.BrandId,
-                        principalTable: "Brand",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "CategoryBrand",
-                columns: table => new
-                {
-                    Id = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    CategoryId = table.Column<int>(type: "int", nullable: false),
-                    BrandId = table.Column<int>(type: "int", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_CategoryBrand", x => x.Id);
-                    table.ForeignKey(
-                        name: "FK_CategoryBrand_Brand_BrandId",
-                        column: x => x.BrandId,
-                        principalTable: "Brand",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
-                    table.ForeignKey(
-                        name: "FK_CategoryBrand_Category_CategoryId",
-                        column: x => x.CategoryId,
-                        principalTable: "Category",
+                        name: "FK_Product_Manufacturer_ManufacturerId",
+                        column: x => x.ManufacturerId,
+                        principalTable: "Manufacturer",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Restrict);
                 });
@@ -750,10 +722,15 @@ namespace Shop.Application.Infrastructure.Data.Migrations
                         onDelete: ReferentialAction.Restrict);
                 });
 
-            migrationBuilder.CreateIndex(
-                name: "IX_Brand_PictureId",
-                table: "Brand",
-                column: "PictureId");
+            migrationBuilder.InsertData(
+                table: "Language",
+                columns: new[] { "Id", "Code", "Culture", "CurrencyId", "DisplayOrder", "IsActive", "IsRtl", "Name" },
+                values: new object[] { 1, "en", "en-US", null, 0, true, false, "English" });
+
+            migrationBuilder.InsertData(
+                table: "Language",
+                columns: new[] { "Id", "Code", "Culture", "CurrencyId", "DisplayOrder", "IsActive", "IsRtl", "Name" },
+                values: new object[] { 2, "vi", "vi-VN", null, 0, true, false, "VietNamese" });
 
             migrationBuilder.CreateIndex(
                 name: "IX_Category_ParentCategoryId",
@@ -764,16 +741,6 @@ namespace Shop.Application.Infrastructure.Data.Migrations
                 name: "IX_Category_PictureId",
                 table: "Category",
                 column: "PictureId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_CategoryBrand_BrandId",
-                table: "CategoryBrand",
-                column: "BrandId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_CategoryBrand_CategoryId",
-                table: "CategoryBrand",
-                column: "CategoryId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Language_CurrencyId",
@@ -791,9 +758,14 @@ namespace Shop.Application.Infrastructure.Data.Migrations
                 column: "LanguageId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Product_BrandId",
+                name: "IX_Manufacturer_PictureId",
+                table: "Manufacturer",
+                column: "PictureId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Product_ManufacturerId",
                 table: "Product",
-                column: "BrandId");
+                column: "ManufacturerId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_ProductCategory_CategoryId",
@@ -924,9 +896,6 @@ namespace Shop.Application.Infrastructure.Data.Migrations
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropTable(
-                name: "CategoryBrand");
-
-            migrationBuilder.DropTable(
                 name: "LocaleStringResource");
 
             migrationBuilder.DropTable(
@@ -999,7 +968,7 @@ namespace Shop.Application.Infrastructure.Data.Migrations
                 name: "SpecificationAttributeGroup");
 
             migrationBuilder.DropTable(
-                name: "Brand");
+                name: "Manufacturer");
 
             migrationBuilder.DropTable(
                 name: "Currency");

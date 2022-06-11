@@ -267,7 +267,7 @@ namespace Shop.Application.Media.Services
 
             await DeleteThumbPictureAsync(picture);
 
-            picture.Name = newName;
+            picture.Name = newName.NormalizeFileName();
 
             await _context.SaveChangesAsync();
         }

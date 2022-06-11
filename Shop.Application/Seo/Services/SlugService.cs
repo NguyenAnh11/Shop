@@ -5,8 +5,10 @@ namespace Shop.Application.Seo.Services
 {
     public class SlugService : AbstractService<Slug>, ISlugService
     {
-        public SlugService(ShopDbContext context) : base(context)
+        private readonly IWorkContext _workContext;
+        public SlugService(ShopDbContext context, IWorkContext workContext) : base(context)
         {
+            _workContext = workContext;
         }
 
         public async Task<Slug> GetSlugByIdAsync(int id, bool tracked = false)
@@ -22,9 +24,26 @@ namespace Shop.Application.Seo.Services
             return slug;
         }
 
+         public async Task<IList<Slug>> GetSlugsAsync<T>(T entity, bool includeHidden = false, bool tracked = false) 
+            where T: BaseEntity, ISlugSupported
+        {
+            Guard.IsNotNull(entity, nameof(entity));
+
+            var slugs = await Table
+                .ApplyTracking(tracked)
+                .ApplyActiveFilter(includeHidden)
+                .Where(p => p.EntityId == entity.Id && p.EntityGroup == typeof(T).Name)
+                .ToListAsync();
+
+            return slugs;
+        }
+
         public async Task<IList<Slug>> GetSlugsAsync<T>(T entity, int? languageId, bool includeHidden = false, bool tracked = false)
             where T : BaseEntity, ISlugSupported
         {
+            Guard.IsNotNull(entity, nameof(entity));
+            Guard.IsGreaterThan(languageId.Value, 0, nameof(languageId));
+
             var entityId = entity.Id;
             var entityGroup = entity.GetType().Name;
 
@@ -61,7 +80,7 @@ namespace Shop.Application.Seo.Services
             languageId = languageId switch
             {
                 0 => null,
-                null => 1,
+                null => (await _workContext.GetWorkingLanguageAsync()).Id,
                 _ => languageId
             };
 
@@ -96,7 +115,7 @@ namespace Shop.Application.Seo.Services
 
             int? langId = languageId == 0 ? null : languageId;
 
-            var slugs = await GetSlugsAsync(entity, langId, tracked: true);
+            var slugs = await GetSlugsAsync(entity, langId, true, tracked: true);
 
             var activeSlug = slugs.FirstOrDefault(p => p.IsActive);
 
@@ -158,6 +177,46 @@ namespace Shop.Application.Seo.Services
             value = await SeoHelper.SeekUrlAsync(value, uniqueCheckAsync);
 
             return value;
+        }
+
+        public async Task DeleteSlugAsync<T>(T entity) where T: BaseEntity, ISlugSupported
+        {
+            Guard.IsNotNull(entity, nameof(entity));
+
+            var slugs = await GetSlugsAsync(entity, true, true);
+
+            if(slugs.Any())
+            {
+                using var transaction = await _context.Database.BeginTransactionAsync();
+
+                foreach(var slug in slugs)
+                    Table.Remove(slug);
+
+                await _context.SaveChangesAsync();
+
+                await transaction.CommitAsync();
+            }
+        }
+
+        public async Task DeleteSlugAsync<T>(T entity, int? languageId = null)
+            where T: BaseEntity, ISlugSupported
+        {
+            Guard.IsNotNull(entity, nameof(entity));
+            Guard.IsGreaterThan(languageId.Value, 0, nameof(languageId));
+
+            var slugs = await GetSlugsAsync(entity, languageId, true, true);
+
+            if(slugs.Any())
+            {
+                using var transaction = await _context.Database.BeginTransactionAsync();
+
+                foreach (var slug in slugs)
+                    Table.Remove(slug);
+
+                await _context.SaveChangesAsync();
+
+                await transaction.CommitAsync();
+            }
         }
     }
 }

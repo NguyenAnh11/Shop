@@ -22,54 +22,6 @@ namespace Shop.Application.Infrastructure.Data.Migrations
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder, 1L, 1);
 
-            modelBuilder.Entity("Shop.Domain.Catalog.Brand", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
-
-                    b.Property<DateTime>("CreateUtc")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("Description")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<bool>("IsActive")
-                        .HasColumnType("bit");
-
-                    b.Property<bool>("IsDelete")
-                        .HasColumnType("bit");
-
-                    b.Property<string>("MetaDescription")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("MetaKeywords")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("MetaTitle")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("Name")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<int?>("PictureId")
-                        .HasColumnType("int");
-
-                    b.Property<string>("ShortDescription")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<DateTime?>("UpdateUtc")
-                        .HasColumnType("datetime2");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("PictureId");
-
-                    b.ToTable("Brand");
-                });
-
             modelBuilder.Entity("Shop.Domain.Catalog.Category", b =>
                 {
                     b.Property<int>("Id")
@@ -77,12 +29,6 @@ namespace Shop.Application.Infrastructure.Data.Migrations
                         .HasColumnType("int");
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
-
-                    b.Property<string>("BadgeStyle")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("BadgeText")
-                        .HasColumnType("nvarchar(max)");
 
                     b.Property<DateTime>("CreateUtc")
                         .HasColumnType("datetime2");
@@ -138,7 +84,7 @@ namespace Shop.Application.Infrastructure.Data.Migrations
                     b.ToTable("Category");
                 });
 
-            modelBuilder.Entity("Shop.Domain.Catalog.CategoryBrand", b =>
+            modelBuilder.Entity("Shop.Domain.Catalog.Manufacturer", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -146,19 +92,44 @@ namespace Shop.Application.Infrastructure.Data.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
 
-                    b.Property<int>("BrandId")
+                    b.Property<DateTime>("CreateUtc")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("Description")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<bool>("IsActive")
+                        .HasColumnType("bit");
+
+                    b.Property<bool>("IsDelete")
+                        .HasColumnType("bit");
+
+                    b.Property<string>("MetaDescription")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("MetaKeywords")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("MetaTitle")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Name")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int?>("PictureId")
                         .HasColumnType("int");
 
-                    b.Property<int>("CategoryId")
-                        .HasColumnType("int");
+                    b.Property<string>("ShortDescription")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime?>("UpdateUtc")
+                        .HasColumnType("datetime2");
 
                     b.HasKey("Id");
 
-                    b.HasIndex("BrandId");
+                    b.HasIndex("PictureId");
 
-                    b.HasIndex("CategoryId");
-
-                    b.ToTable("CategoryBrand");
+                    b.ToTable("Manufacturer");
                 });
 
             modelBuilder.Entity("Shop.Domain.Catalog.Product", b =>
@@ -180,9 +151,6 @@ namespace Shop.Application.Infrastructure.Data.Migrations
 
                     b.Property<DateTime?>("AvaliableStartDateUtc")
                         .HasColumnType("datetime2");
-
-                    b.Property<int?>("BrandId")
-                        .HasColumnType("int");
 
                     b.Property<DateTime>("CreateUtc")
                         .HasColumnType("datetime2");
@@ -244,6 +212,9 @@ namespace Shop.Application.Infrastructure.Data.Migrations
 
                     b.Property<bool>("IsTaxExempt")
                         .HasColumnType("bit");
+
+                    b.Property<int?>("ManufacturerId")
+                        .HasColumnType("int");
 
                     b.Property<DateTime?>("MarkAsNewEndDateUtc")
                         .HasColumnType("datetime2");
@@ -308,7 +279,7 @@ namespace Shop.Application.Infrastructure.Data.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("BrandId");
+                    b.HasIndex("ManufacturerId");
 
                     b.ToTable("Product");
                 });
@@ -770,6 +741,28 @@ namespace Shop.Application.Infrastructure.Data.Migrations
                     b.HasIndex("CurrencyId");
 
                     b.ToTable("Language");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 1,
+                            Code = "en",
+                            Culture = "en-US",
+                            DisplayOrder = 0,
+                            IsActive = true,
+                            IsRtl = false,
+                            Name = "English"
+                        },
+                        new
+                        {
+                            Id = 2,
+                            Code = "vi",
+                            Culture = "vi-VN",
+                            DisplayOrder = 0,
+                            IsActive = true,
+                            IsRtl = false,
+                            Name = "VietNamese"
+                        });
                 });
 
             modelBuilder.Entity("Shop.Domain.Localization.LocaleStringResource", b =>
@@ -1067,16 +1060,6 @@ namespace Shop.Application.Infrastructure.Data.Migrations
                     b.ToTable("UserRole");
                 });
 
-            modelBuilder.Entity("Shop.Domain.Catalog.Brand", b =>
-                {
-                    b.HasOne("Shop.Domain.Media.Picture", "Picture")
-                        .WithMany()
-                        .HasForeignKey("PictureId")
-                        .OnDelete(DeleteBehavior.Restrict);
-
-                    b.Navigation("Picture");
-                });
-
             modelBuilder.Entity("Shop.Domain.Catalog.Category", b =>
                 {
                     b.HasOne("Shop.Domain.Catalog.Category", "Parent")
@@ -1094,33 +1077,24 @@ namespace Shop.Application.Infrastructure.Data.Migrations
                     b.Navigation("Picture");
                 });
 
-            modelBuilder.Entity("Shop.Domain.Catalog.CategoryBrand", b =>
+            modelBuilder.Entity("Shop.Domain.Catalog.Manufacturer", b =>
                 {
-                    b.HasOne("Shop.Domain.Catalog.Brand", "Brand")
-                        .WithMany("Cateogries")
-                        .HasForeignKey("BrandId")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
+                    b.HasOne("Shop.Domain.Media.Picture", "Picture")
+                        .WithMany()
+                        .HasForeignKey("PictureId")
+                        .OnDelete(DeleteBehavior.Restrict);
 
-                    b.HasOne("Shop.Domain.Catalog.Category", "Category")
-                        .WithMany("Brands")
-                        .HasForeignKey("CategoryId")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
-
-                    b.Navigation("Brand");
-
-                    b.Navigation("Category");
+                    b.Navigation("Picture");
                 });
 
             modelBuilder.Entity("Shop.Domain.Catalog.Product", b =>
                 {
-                    b.HasOne("Shop.Domain.Catalog.Brand", "Brand")
-                        .WithMany()
-                        .HasForeignKey("BrandId")
+                    b.HasOne("Shop.Domain.Catalog.Manufacturer", "Manufacturer")
+                        .WithMany("Products")
+                        .HasForeignKey("ManufacturerId")
                         .OnDelete(DeleteBehavior.Restrict);
 
-                    b.Navigation("Brand");
+                    b.Navigation("Manufacturer");
                 });
 
             modelBuilder.Entity("Shop.Domain.Catalog.ProductCategory", b =>
@@ -1390,18 +1364,16 @@ namespace Shop.Application.Infrastructure.Data.Migrations
                     b.Navigation("User");
                 });
 
-            modelBuilder.Entity("Shop.Domain.Catalog.Brand", b =>
-                {
-                    b.Navigation("Cateogries");
-                });
-
             modelBuilder.Entity("Shop.Domain.Catalog.Category", b =>
                 {
-                    b.Navigation("Brands");
-
                     b.Navigation("Products");
 
                     b.Navigation("SubCategories");
+                });
+
+            modelBuilder.Entity("Shop.Domain.Catalog.Manufacturer", b =>
+                {
+                    b.Navigation("Products");
                 });
 
             modelBuilder.Entity("Shop.Domain.Catalog.Product", b =>

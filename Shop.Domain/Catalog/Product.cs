@@ -44,8 +44,8 @@ namespace Shop.Domain.Catalog
         public decimal? Height { get; set; }
         public decimal? Width { get; set; }
         public decimal? Weight { get; set; }
-        public int? BrandId { get; set; } 
-        public Brand Brand { get; set; }
+        public int? ManufacturerId { get; set; } 
+        public Manufacturer Manufacturer { get; set; }
         public DateTime? AvaliableStartDateUtc { get; set; }
         public DateTime? AvaliableEndDateUtc { get; set; }
         public DateTime CreateUtc { get; set; }

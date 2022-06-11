@@ -13,7 +13,7 @@ namespace Shop.Api.Controller
         private readonly IUserService _userService;
         private readonly ITokenService _tokenService;
         private readonly IUserFieldService _userFieldService;
-        private readonly ILocalizationService _localizationService;
+        private readonly ITranslationService _localizationService;
         private readonly IAuthenticationService _authenticationService;
         private readonly IMessageProviderService _messageProviderService;
         public AccountController(
@@ -22,7 +22,7 @@ namespace Shop.Api.Controller
             IUserService userService,
             ITokenService tokenService,
             IUserFieldService userFieldService,
-            ILocalizationService localizationService,
+            ITranslationService localizationService,
             IAuthenticationService authenticationService,
             IMessageProviderService messageProviderService)
         {

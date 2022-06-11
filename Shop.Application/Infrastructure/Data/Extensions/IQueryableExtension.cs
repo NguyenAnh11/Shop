@@ -8,7 +8,15 @@ namespace Shop.Application.Infrastructure.Data.Extensions
             => tracked ? source : source.AsNoTracking();
 
         public static IQueryable<T> ApplyDeletedFilter<T>(this IQueryable<T> source, bool includeDeleted = false) where T : BaseEntity
-            => includeDeleted ? source : source.IgnoreQueryFilters();
+        {
+            if (includeDeleted)
+                return source;
+
+            if (!typeof(ISoftDelete).IsAssignableFrom(typeof(T)))
+                return source;
+
+            return source.OfType<ISoftDelete>().Where(p => !p.IsDelete).Cast<T>();
+        }
 
         public static IQueryable<T> ApplyActiveFilter<T>(this IQueryable<T> source, bool includeHidden = false)
             where T : class, IActive

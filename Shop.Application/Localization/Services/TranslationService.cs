@@ -3,18 +3,18 @@ using Shop.Domain.Localization;
 
 namespace Shop.Application.Localization.Services
 {
-    public class LocalizationService : AbstractService<LocaleStringResource>, ILocalizationService
+    public class TranslationService : AbstractService<TranslationResource>, ITranslationService
     {
         private readonly IWorkContext _workContext;
-        public LocalizationService(ShopDbContext context, IWorkContext workContext) : base(context)
+        public TranslationService(ShopDbContext context, IWorkContext workContext) : base(context)
         {
             _workContext = workContext;
         }
 
-        public async Task<LocaleStringResource> GetResourceByIdAsync(int id)
+        public async Task<TranslationResource> GetResourceByIdAsync(int id)
             => await Table.FindByIdAsync(id);
 
-        public async Task<LocaleStringResource> GetResourceByNameAsync(string name, int languageId, bool extractMatch = true)
+        public async Task<TranslationResource> GetResourceByNameAsync(string name, int languageId, bool extractMatch = true)
         {
             if (name.IsEmpty() || languageId <= 0)
                 return null;
@@ -46,8 +46,7 @@ namespace Shop.Application.Localization.Services
         public async Task<string> GetLocalizedEnumAsync<TEnum>(TEnum enumValue, int languageId)
             where TEnum : struct
         {
-            if (!typeof(TEnum).IsEnum)
-                throw new InvalidTypeException();
+            Guard.IsAssignableToType(typeof(TEnum), typeof(Enum), nameof(enumValue));
 
             var enumName = typeof(TEnum).Name.Split('.')?.Last();
 
@@ -77,7 +76,7 @@ namespace Shop.Application.Localization.Services
 
             using var transaction = await _context.Database.BeginTransactionAsync();
 
-            resource = new LocaleStringResource
+            resource = new TranslationResource
             {
                 Value = dto.Value,
                 Name = dto.Name.ToLower(),
@@ -126,7 +125,7 @@ namespace Shop.Application.Localization.Services
             return Response.Ok();
         }
 
-        public async Task<Response> DeleteResourceAsync(LocaleStringResource resource)
+        public async Task<Response> DeleteResourceAsync(TranslationResource resource)
         {
             Guard.IsNotNull(resource, nameof(resource));
 

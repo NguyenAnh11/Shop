@@ -4,7 +4,7 @@ using Shop.Domain.Media;
 
 namespace Shop.Domain.Catalog
 {
-    public class SpecificationAttributeOption : BaseEntity, ILocalizedEntity
+    public class SpecificationAttributeOption : BaseEntity, ITranslationEntity
     {
         public int SpecificationAttributeId { get; set; }
         public SpecificationAttribute SpecificationAttribute { get; set; } 

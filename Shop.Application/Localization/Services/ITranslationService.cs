@@ -3,11 +3,11 @@ using Shop.Domain.Localization;
 
 namespace Shop.Application.Localization.Services
 {
-    public interface ILocalizationService : IAbstractService<LocaleStringResource>
+    public interface ITranslationService : IAbstractService<TranslationResource>
     {
-        Task<LocaleStringResource> GetResourceByIdAsync(int id);
+        Task<TranslationResource> GetResourceByIdAsync(int id);
 
-        Task<LocaleStringResource> GetResourceByNameAsync(string name, int languageId, bool extractMatch = true);
+        Task<TranslationResource> GetResourceByNameAsync(string name, int languageId, bool extractMatch = true);
 
         Task<string> GetResourceAsync(string name);
 
@@ -21,6 +21,6 @@ namespace Shop.Application.Localization.Services
 
         Task<Response> UpdateResourceAsync(LocaleResourceDto dto);
 
-        Task<Response> DeleteResourceAsync(LocaleStringResource resource);
+        Task<Response> DeleteResourceAsync(TranslationResource resource);
     }
 }
