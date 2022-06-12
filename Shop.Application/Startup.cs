@@ -8,6 +8,7 @@
                 .AddAutoMapper()
                 .AddSetting()
                 .AddAppDbContext()
+                .AddMediatorModuleService()
                 .AddLocalizationModuleService()
                 .AddSecurityModuleService()
                 .AddUsersModuleService()
@@ -41,6 +42,13 @@
             services.AddSingleton(mapperConfiguration.CreateMapper());
 
             return services;
+        }
+
+        public static IServiceCollection AddMediatorModuleService(this IServiceCollection services)
+        {
+            var assemlies = Singleton<ITypeFinder>.Instance.Assemblies();
+
+            return services.AddMediatR(assemlies, config => config.AsTransient());
         }
 
         public static IServiceCollection AddSetting(this IServiceCollection services)

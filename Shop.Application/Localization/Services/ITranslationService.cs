@@ -1,26 +1,21 @@
-﻿using Shop.Application.Localization.Dtos;
-using Shop.Domain.Localization;
+﻿using Shop.Domain.Localization;
 
 namespace Shop.Application.Localization.Services
 {
     public interface ITranslationService : IAbstractService<TranslationResource>
     {
-        Task<TranslationResource> GetResourceByIdAsync(int id);
+        Task<int> GetCountTranslationsByLanguageIdAsync(int languageId);
 
-        Task<TranslationResource> GetResourceByNameAsync(string name, int languageId, bool extractMatch = true);
+        Task<TranslationResource> GetTranslationByIdAsync(int id, bool tracked = false);
 
-        Task<string> GetResourceAsync(string name);
+        Task<TranslationResource> GetTranslationByNameAsync(string name, int languageId, bool extractMatch = true);
 
-        Task<string> GetResourceAsync(string name, int langaugeId);
+        Task<string> GetTranslationAsync(string name);
 
-        Task<string> GetLocalizedEnumAsync<TEnum>(TEnum enumValue) where TEnum : struct;
+        Task<string> GetTranslationAsync(string name, int langaugeId);
 
-        Task<string> GetLocalizedEnumAsync<TEnum>(TEnum enumValue, int languageId) where TEnum : struct;
+        Task<string> GetTranslationEnumAsync<TEnum>(TEnum enumValue) where TEnum : struct;
 
-        Task<Response<int>> InsertResourceAsync(LocaleResourceDto dto);
-
-        Task<Response> UpdateResourceAsync(LocaleResourceDto dto);
-
-        Task<Response> DeleteResourceAsync(TranslationResource resource);
+        Task<string> GetTranslationEnumAsync<TEnum>(TEnum enumValue, int languageId) where TEnum : struct;
     }
 }

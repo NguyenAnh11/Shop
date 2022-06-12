@@ -5,7 +5,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace Shop.Application.Infrastructure.Data.Migrations
 {
-    public partial class init : Migration
+    public partial class Init : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -245,50 +245,6 @@ namespace Shop.Application.Infrastructure.Data.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "LocaleStringResource",
-                columns: table => new
-                {
-                    Id = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    Name = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    Value = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    LanguageId = table.Column<int>(type: "int", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_LocaleStringResource", x => x.Id);
-                    table.ForeignKey(
-                        name: "FK_LocaleStringResource_Language_LanguageId",
-                        column: x => x.LanguageId,
-                        principalTable: "Language",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "LocalizedEntity",
-                columns: table => new
-                {
-                    Id = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    EntityId = table.Column<int>(type: "int", nullable: false),
-                    EntityGroup = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    EntityKey = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    EntityValue = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    LanguageId = table.Column<int>(type: "int", nullable: true)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_LocalizedEntity", x => x.Id);
-                    table.ForeignKey(
-                        name: "FK_LocalizedEntity_Language_LanguageId",
-                        column: x => x.LanguageId,
-                        principalTable: "Language",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
-                });
-
-            migrationBuilder.CreateTable(
                 name: "Slug",
                 columns: table => new
                 {
@@ -305,6 +261,50 @@ namespace Shop.Application.Infrastructure.Data.Migrations
                     table.PrimaryKey("PK_Slug", x => x.Id);
                     table.ForeignKey(
                         name: "FK_Slug_Language_LanguageId",
+                        column: x => x.LanguageId,
+                        principalTable: "Language",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "TranslationEntity",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    EntityId = table.Column<int>(type: "int", nullable: false),
+                    EntityGroup = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    EntityKey = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    EntityValue = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    LanguageId = table.Column<int>(type: "int", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_TranslationEntity", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_TranslationEntity_Language_LanguageId",
+                        column: x => x.LanguageId,
+                        principalTable: "Language",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "TranslationResource",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    Name = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    Value = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    LanguageId = table.Column<int>(type: "int", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_TranslationResource", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_TranslationResource_Language_LanguageId",
                         column: x => x.LanguageId,
                         principalTable: "Language",
                         principalColumn: "Id",
@@ -748,16 +748,6 @@ namespace Shop.Application.Infrastructure.Data.Migrations
                 column: "CurrencyId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_LocaleStringResource_LanguageId",
-                table: "LocaleStringResource",
-                column: "LanguageId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_LocalizedEntity_LanguageId",
-                table: "LocalizedEntity",
-                column: "LanguageId");
-
-            migrationBuilder.CreateIndex(
                 name: "IX_Manufacturer_PictureId",
                 table: "Manufacturer",
                 column: "PictureId");
@@ -868,6 +858,16 @@ namespace Shop.Application.Infrastructure.Data.Migrations
                 column: "WareHouseId");
 
             migrationBuilder.CreateIndex(
+                name: "IX_TranslationEntity_LanguageId",
+                table: "TranslationEntity",
+                column: "LanguageId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_TranslationResource_LanguageId",
+                table: "TranslationResource",
+                column: "LanguageId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_User_LanguageId",
                 table: "User",
                 column: "LanguageId");
@@ -896,12 +896,6 @@ namespace Shop.Application.Infrastructure.Data.Migrations
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropTable(
-                name: "LocaleStringResource");
-
-            migrationBuilder.DropTable(
-                name: "LocalizedEntity");
-
-            migrationBuilder.DropTable(
                 name: "ProductCategory");
 
             migrationBuilder.DropTable(
@@ -924,6 +918,12 @@ namespace Shop.Application.Infrastructure.Data.Migrations
 
             migrationBuilder.DropTable(
                 name: "StockQuantityHistory");
+
+            migrationBuilder.DropTable(
+                name: "TranslationEntity");
+
+            migrationBuilder.DropTable(
+                name: "TranslationResource");
 
             migrationBuilder.DropTable(
                 name: "UserFied");

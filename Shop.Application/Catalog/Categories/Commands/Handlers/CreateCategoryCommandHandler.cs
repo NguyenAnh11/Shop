@@ -1,4 +1,5 @@
 ﻿using Shop.Application.Catalog.Categories.Commands.Models;
+using Shop.Application.Catalog.Categories.Services;
 using Shop.Application.Localization.Services;
 using Shop.Application.Media.Services;
 using Shop.Application.Seo.Services;
@@ -6,29 +7,32 @@ using Shop.Domain.Catalog;
 
 namespace Shop.Application.Catalog.Categories.Commands.Handlers
 {
-    public class AddCategoryCommandHandler : IRequestHandler<AddCategoryCommand, int>
+    public class CreateCategoryCommandHandler : IRequestHandler<CreateCategoryCommand, int>
     {
-        private readonly IMediator _meidator;
+        private readonly IMediator _mediator;
         private readonly ShopDbContext _context;
         private readonly ISlugService _slugService;
         private readonly IPictureService _pictureService;
+        private readonly ICategoryService _categoryService;
         private readonly ITranslationEntityService _translationEntityService;
 
-        public AddCategoryCommandHandler(
-            IMediator meidator,
+        public CreateCategoryCommandHandler(
+            IMediator mediator,
             ShopDbContext context,
             ISlugService slugService,
             IPictureService pictureService,
+            ICategoryService categoryService,
             ITranslationEntityService translationEntityService)
         {
-            _meidator = meidator;
+            _mediator = mediator;
             _context = context;
             _slugService = slugService;
             _pictureService = pictureService;
+            _categoryService = categoryService;
             _translationEntityService = translationEntityService;
         }
 
-        public async Task<int> Handle(AddCategoryCommand request, CancellationToken cancellationToken)
+        public async Task<int> Handle(CreateCategoryCommand request, CancellationToken cancellationToken)
         {
             Guard.IsNotNull(request, nameof(request));
 
@@ -49,7 +53,7 @@ namespace Shop.Application.Catalog.Categories.Commands.Handlers
                 ParentCategoryId = request.ParentCategoryId == 0 ? null : request.ParentCategoryId,
             };
 
-            await _context.Set<Category>().AddAsync(category, cancellationToken);
+            await _categoryService.Table.AddAsync(category, cancellationToken);
 
             await _context.SaveChangesAsync(cancellationToken);
 
@@ -63,10 +67,9 @@ namespace Shop.Application.Catalog.Categories.Commands.Handlers
             if (category.PictureId != null)
             {
                 var picture = await _pictureService.GetPictureByIdAsync(category.PictureId.Value, true);
-                await _pictureService.SetNamePictureAsync(picture, request.Slug);
+                await _pictureService.SetNamePictureAsync(picture, category.Name);
             }
 
-            //save original translation
             await _translationEntityService.SaveTranslationPropertyAsync(category, p => p.Name, category.Name, 0);
             await _translationEntityService.SaveTranslationPropertyAsync(category, p => p.Description, category.Description, 0);
             await _translationEntityService.SaveTranslationPropertyAsync(category, p => p.ShortDescription, category.ShortDescription, 0);
@@ -76,7 +79,7 @@ namespace Shop.Application.Catalog.Categories.Commands.Handlers
 
             await transaction.CommitAsync(cancellationToken);
 
-            await _meidator.EntityUpdated(category);
+            await _mediator.EntityUpdated(category);
             return category.Id;
         }
     }

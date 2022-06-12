@@ -13,7 +13,7 @@ namespace Shop.Api.Controller
         private readonly IUserService _userService;
         private readonly ITokenService _tokenService;
         private readonly IUserFieldService _userFieldService;
-        private readonly ITranslationService _localizationService;
+        private readonly ITranslationService _translationService;
         private readonly IAuthenticationService _authenticationService;
         private readonly IMessageProviderService _messageProviderService;
         public AccountController(
@@ -22,7 +22,7 @@ namespace Shop.Api.Controller
             IUserService userService,
             ITokenService tokenService,
             IUserFieldService userFieldService,
-            ITranslationService localizationService,
+            ITranslationService translationService,
             IAuthenticationService authenticationService,
             IMessageProviderService messageProviderService)
         {
@@ -32,7 +32,7 @@ namespace Shop.Api.Controller
             _tokenService = tokenService;
             _messageProviderService = messageProviderService;
             _userFieldService = userFieldService;
-            _localizationService = localizationService;
+            _translationService = translationService;
             _authenticationService = authenticationService;
         }
 
@@ -44,7 +44,7 @@ namespace Shop.Api.Controller
 
             if (!response.Success)
             {
-                return BadRequest(await _localizationService.GetResourceAsync(response.Message));
+                return BadRequest(await _translationService.GetTranslationAsync(response.Message));
             }
 
             var token = await _authenticationService.LoginAsync(response.Data);
@@ -68,7 +68,7 @@ namespace Shop.Api.Controller
 
             if (!response.Success)
             {
-                return BadRequest(await _localizationService.GetResourceAsync(response.Message));
+                return BadRequest(await _translationService.GetTranslationAsync(response.Message));
             }
 
             var language = await _workContext.GetWorkingLanguageAsync();
@@ -105,12 +105,12 @@ namespace Shop.Api.Controller
 
             if (!response.Success)
             {
-                return BadRequest(await _localizationService.GetResourceAsync(response.Message));
+                return BadRequest(await _translationService.GetTranslationAsync(response.Message));
             }
 
             await _messageProviderService.SendWelcomeMessageAsync(response.Data, await _workContext.GetWorkingLanguageAsync());
 
-            return Ok(await _localizationService.GetResourceAsync(response.Message));
+            return Ok(await _translationService.GetTranslationAsync(response.Message));
         }
 
         [HttpPost]
@@ -121,7 +121,7 @@ namespace Shop.Api.Controller
 
             if (user == null || user.IsDelete || !user.IsActive)
             {
-                return BadRequest(await _localizationService.GetResourceAsync("Account.RecoveryPassword.Error.EmailNotFound"));
+                return BadRequest(await _translationService.GetTranslationAsync("Account.RecoveryPassword.Error.EmailNotFound"));
             }
 
             List<Claim> claims = new()

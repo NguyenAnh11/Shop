@@ -13,7 +13,7 @@ namespace Shop.Application
 
         public async Task<Language> GetWorkingLanguageAsync()
         {
-            var language = await _languageService.GetLanguageByIdAsync(5);
+            var language = await _languageService.GetLanguageByIdAsync(1);
 
             return language;
         }

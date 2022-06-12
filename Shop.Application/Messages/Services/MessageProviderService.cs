@@ -34,7 +34,7 @@ namespace Shop.Application.Messages.Services
 
             var body = await _viewRenderService.RenderToStringAsync(viewPath, model);
 
-            await _emailService.SendAsync(new List<string> { user.Email }, await _translationService.GetResourceAsync(subject, language.Id), body);
+            await _emailService.SendAsync(new List<string> { user.Email }, await _translationService.GetTranslationAsync(subject, language.Id), body);
         }
 
         protected async Task SendMessageAsync(User user, Language language, string viewName, string subject)
@@ -47,7 +47,7 @@ namespace Shop.Application.Messages.Services
 
             var body = await _viewRenderService.RenderToStringAsync(viewPath);
 
-            await _emailService.SendAsync(new List<string> { user.Email }, await _translationService.GetResourceAsync(subject, language.Id), body);
+            await _emailService.SendAsync(new List<string> { user.Email }, await _translationService.GetTranslationAsync(subject, language.Id), body);
         }
 
         public async Task SendActiveAccountMessageAsync(User user, Language language, string link)

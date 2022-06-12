@@ -5,119 +5,129 @@ namespace Shop.Api.Controller
     [ApiController]
     public class LanguageController : ControllerBase
     {
+        private readonly IMediator _mediator;
         private readonly ILanguageService _languageService;
         private readonly ITranslationService _translationService;
-        public LanguageController(ILanguageService languageService, ITranslationService translationService)
+        public LanguageController(
+            IMediator mediator,
+            ILanguageService languageService, 
+            ITranslationService translationService)
         {
+            _mediator = mediator;
             _languageService = languageService;
             _translationService = translationService;
         }
 
         [HttpGet]
-        [Route("/languages/{id}")]
+        [Route("/api/languages/{id}")]
         public async Task<IActionResult> GetById(int id)
         {
-            var model = await _languageService.GetLanguageByIdAsync(id);
+            var model = await _mediator.Send(new GetLanguageQuery(id));
 
             return Ok(model);
         }
 
         [HttpPost]
-        [Route("/languages")]
-        public async Task<IActionResult> CreateLanguage([FromBody] LanguageDto dto)
+        [Route("/api/languages")]
+        public async Task<IActionResult> CreateLanguage([FromBody] CreateLanguageCommand command)
         {
-            var response = await _languageService.InsertLanguageAsync(dto);
+            var response = await _mediator.Send(command);
 
             if (!response.Success)
-                return BadRequest(await _translationService.GetResourceAsync(response.Message));
+                return BadRequest(response.Message);
 
             return CreatedAtAction(nameof(GetById), new { id = response.Data }, response.Data);
         }
 
         [HttpPut]
-        [Route("/languages/{id}")]
-        public async Task<IActionResult> UpdateLanguage(int id, [FromBody] LanguageDto dto)
+        [Route("/api/languages/{id}")]
+        public async Task<IActionResult> UpdateLanguage(int id, [FromBody] UpdateLanguageCommand command)
         {
-            if (id != dto.Id)
+            if (id != command.Id)
                 return BadRequest();
 
-            var response = await _languageService.UpdateLanguageAsync(dto);
+            var response = await _mediator.Send(command);
 
             if (!response.Success)
-                return BadRequest(await _translationService.GetResourceAsync(response.Message));
+                return BadRequest(response.Message);
 
             return NoContent();
         }
 
         [HttpDelete]
-        [Route("/languages/{id}")]
-        public async Task<IActionResult> DeleteLanguage(int id)
+        [Route("/api/languages/{id}")]
+        public async Task<IActionResult> Delete(int id)
         {
-            var language = await _languageService.GetLanguageByIdAsync(id);
+            var language = await _languageService.GetLanguageByIdAsync(id, tracked: true);
 
             if (language == null)
-                return NotFound();
+                return BadRequest();
 
-            var response = await _languageService.DeleteLanguageAsync(language);
+            var response = await _mediator.Send(new DeleteLanguageCommand(language));
 
             if (!response.Success)
-                return BadRequest(await _translationService.GetResourceAsync(response.Message));
+                return BadRequest(response.Message);
 
             return NoContent();
         }
 
         [HttpGet]
-        [Route("/languages/resources/{id}")]
+        [Route("/api/languages/resources/{id}")]
         public async Task<IActionResult> GetResourceById(int id)
         {
-            var model = await _translationService.GetResourceByIdAsync(id);
+            var model = await _mediator.Send(new GetTranslationResourceQuery(id));
 
             return Ok(model);   
         }
 
         [HttpPost]
-        [Route("/languages/{languageId}/resources")]
-        public async Task<IActionResult> CreateResource(int languageId, [FromBody] LocaleResourceDto dto)
+        [Route("/api/languages/{languageId}/resources")]
+        public async Task<IActionResult> CreateResource(int languageId, [FromBody] CreateTranslationResourceCommand command)
         {
-            if (languageId != dto.LanguageId)
+            if (languageId != command.LanguageId)
                 return BadRequest();
 
-            var response = await _translationService.InsertResourceAsync(dto);
+            var response = await _mediator.Send(command);
 
             if (!response.Success)
-                return BadRequest(await _translationService.GetResourceAsync(response.Message));
+                return BadRequest(response.Message);
 
             return CreatedAtAction(nameof(GetResourceById), new { id = response.Data }, response.Data);
         }
 
         [HttpPut]
-        [Route("/languages/{languageId}/resources/{id}")]
-        public async Task<IActionResult> UpdateResource(int languageId, int id, [FromBody] LocaleResourceDto dto)
+        [Route("/api/languages/{languageId}/resources/{id}")]
+        public async Task<IActionResult> UpdateResource(int languageId, int id, [FromBody] UpdateTranslationResourceCommand command)
         {
-            if (languageId != dto.LanguageId)
+            if (languageId != command.LanguageId)
                 return BadRequest();
 
-            if (id != dto.Id)
+            if (id != command.Id)
                 return BadRequest();
 
-            var response = await _translationService.UpdateResourceAsync(dto);
+            var language = await _languageService.GetLanguageByIdAsync(languageId);
+
+            if (language == null)
+                return BadRequest();
+
+            var response = await _mediator.Send(command);
 
             if (!response.Success)
-                return BadRequest(await _translationService.GetResourceAsync(response.Message));
+                return BadRequest(response.Message);
 
             return NoContent();
         }
 
         [HttpDelete]
-        [Route("/languages/resources/{id}")]
+        [Route("/api/languages/resources/{id}")]
         public async Task<IActionResult> DeleteResource(int id)
         {
-            var resource = await _translationService.GetResourceByIdAsync(id);
+            var translation = await _translationService.GetTranslationByIdAsync(id, tracked: true);
 
-            if (resource == null)
-                return NotFound();
+            if (translation == null)
+                return BadRequest();
 
-            await _translationService.DeleteResourceAsync(resource);
+            await _mediator.Send(new DeleteTranslationResourceCommand(translation));
 
             return NoContent();
         }

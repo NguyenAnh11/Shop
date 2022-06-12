@@ -42,7 +42,9 @@ namespace Shop.Application.Seo.Services
             where T : BaseEntity, ISlugSupported
         {
             Guard.IsNotNull(entity, nameof(entity));
-            Guard.IsGreaterThan(languageId.Value, 0, nameof(languageId));
+
+            if (languageId != null)
+                Guard.IsGreaterThan(languageId.Value, 0, nameof(languageId));
 
             var entityId = entity.Id;
             var entityGroup = entity.GetType().Name;
@@ -60,7 +62,9 @@ namespace Shop.Application.Seo.Services
         {
             Guard.IsGreaterThan(entityId, 0, nameof(entityId));
             Guard.IsNotEmpty(entityGroup, nameof(entityGroup));
-            Guard.IsGreaterThan(languageId.Value, 0, nameof(languageId));
+
+            if (languageId != null)
+                Guard.IsGreaterThan(languageId.Value, 0, nameof(languageId));
 
             var slug = await Table
                 .ApplyActiveFilter()
@@ -95,9 +99,7 @@ namespace Shop.Application.Seo.Services
 
             var count = await Table
                 .ApplyActiveFilter(includeHidden)
-                .Where(p =>
-                    p.EntityId == entity.Id &&
-                    p.EntityGroup == typeof(T).Name)
+                .Where(p => p.EntityId == entity.Id && p.EntityGroup == typeof(T).Name)
                 .CountAsync();
 
             return count;
@@ -147,11 +149,7 @@ namespace Shop.Application.Seo.Services
                 await Table.AddAsync(slug);
             }
 
-            using var transaction = await _context.Database.BeginTransactionAsync();
-
             await _context.SaveChangesAsync();
-
-            await transaction.CommitAsync();
         }
         
         public async Task<string> ValidateSlugAsync<T>(T entity, string value) where T: BaseEntity, ISlugSupported
@@ -187,36 +185,23 @@ namespace Shop.Application.Seo.Services
 
             if(slugs.Any())
             {
-                using var transaction = await _context.Database.BeginTransactionAsync();
-
-                foreach(var slug in slugs)
-                    Table.Remove(slug);
+                Table.RemoveRange(slugs);
 
                 await _context.SaveChangesAsync();
-
-                await transaction.CommitAsync();
             }
         }
 
-        public async Task DeleteSlugAsync<T>(T entity, int? languageId = null)
+        public async Task InActiveSlugAsync<T>(T entity, int languageId)
             where T: BaseEntity, ISlugSupported
         {
             Guard.IsNotNull(entity, nameof(entity));
-            Guard.IsGreaterThan(languageId.Value, 0, nameof(languageId));
+            Guard.IsGreaterThan(languageId, 0, nameof(languageId));
 
-            var slugs = await GetSlugsAsync(entity, languageId, true, true);
+            var activeSlug = await GetActiveSlugAsync(entity.Id, typeof(T).Name, languageId);
 
-            if(slugs.Any())
-            {
-                using var transaction = await _context.Database.BeginTransactionAsync();
+            activeSlug.IsActive = false;
 
-                foreach (var slug in slugs)
-                    Table.Remove(slug);
-
-                await _context.SaveChangesAsync();
-
-                await transaction.CommitAsync();
-            }
+            await _context.SaveChangesAsync();
         }
     }
 }

@@ -5,6 +5,9 @@ namespace Shop.Application.Localization.Services
 {
     public interface ITranslationEntityService : IAbstractService<TranslationEntity>
     {
+        Task<int> GetCountTranslationsPerEntityAsync<T>(T entity)
+            where T : BaseEntity, ITranslationEntity;
+
         Task<string> GetTranslationPropertyAsync<T>(T entity, Expression<Func<T, string>> func, int? languageId = null)
             where T : BaseEntity, ITranslationEntity;
 
@@ -15,6 +18,9 @@ namespace Shop.Application.Localization.Services
             where T : BaseEntity, ITranslationEntity;
 
         Task DeleteAllTranslationPropertyAsync<T>(T entity, Expression<Func<T, string>> func)
+            where T : BaseEntity, ITranslationEntity;
+
+        Task DeleteTranslationEntityByLanguageAsync<T>(T entity, int? languageId = null)
             where T : BaseEntity, ITranslationEntity;
     }
 }

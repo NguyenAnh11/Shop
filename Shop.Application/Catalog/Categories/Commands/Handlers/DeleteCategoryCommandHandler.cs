@@ -30,7 +30,7 @@ namespace Shop.Application.Catalog.Categories.Commands.Handlers
 
             using var transaction = await _context.Database.BeginTransactionAsync(cancellationToken);
 
-            _context.Set<Category>().Remove(request.Category);
+            _categoryService.Table.Remove(request.Category);
 
             var subCategories = await _categoryService.GetCategoriesByParentCategoryIdAsync(request.Category.Id);
 

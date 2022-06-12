@@ -54,28 +54,29 @@ namespace Shop.Application.Catalog.Categories.Commands.Handlers
             category.MetaKeywords = request.MetaKeywords;
             category.MetaDescription = request.MetaDescription;
 
-            //update slug
+           
             if (request.Slug.IsEmpty())
                 request.Slug = await _slugService.ValidateSlugAsync(category, category.Name);
             else
                 request.Slug = await _slugService.ValidateSlugAsync(category, request.Slug);
 
-            //update picture
+            
             int prevPictureId = category.PictureId ?? 0;
             if (prevPictureId != 0 && prevPictureId != request.PictureId)
             {
                 var prevPicture = await _pictureService.GetPictureByIdAsync(prevPictureId);
                 await _pictureService.DeleteAsync(prevPicture);
             }
-            if (request.PictureId != 0)
+
+            category.PictureId = request.PictureId == 0 ? null : request.PictureId;
+            if(category.PictureId != null)
             {
-                category.PictureId = request.PictureId;
-                var picture = await _pictureService.GetPictureByIdAsync(request.PictureId);
-                await _pictureService.SetNamePictureAsync(picture, request.Slug);
-            }
+                var picture = await _pictureService.GetPictureByIdAsync(category.PictureId.Value);
+                await _pictureService.SetNamePictureAsync(picture, category.Name);
+            }   
 
             category.ParentCategoryId = request.ParentCategoryId == 0 ? null : request.ParentCategoryId;
-            //validate category hierachy
+            
             var parentCategory = await _categoryService.GetCategoryByIdAsync(category.ParentCategoryId ?? 0);
             while (parentCategory != null)
             {
@@ -88,7 +89,6 @@ namespace Shop.Application.Catalog.Categories.Commands.Handlers
                 parentCategory = await _categoryService.GetCategoryByIdAsync(parentCategory.ParentCategoryId ?? 0);
             }
 
-            //update original translation
             await _translationEntityService.SaveTranslationPropertyAsync(category, p => p.Name, category.Name, 0);
             await _translationEntityService.SaveTranslationPropertyAsync(category, p => p.Description, category.Description, 0);
             await _translationEntityService.SaveTranslationPropertyAsync(category, p => p.ShortDescription, category.ShortDescription, 0);

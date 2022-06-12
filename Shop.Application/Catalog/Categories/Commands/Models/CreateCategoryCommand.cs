@@ -1,6 +1,6 @@
 ﻿namespace Shop.Application.Catalog.Categories.Commands.Models
 {
-    public record AddCategoryCommand : IRequest<int>
+    public record CreateCategoryCommand : IRequest<int>
     {
         public string Name { get; set; }
         public string Description { get; set; }

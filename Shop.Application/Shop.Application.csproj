@@ -6,12 +6,6 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Compile Remove="Catalog\Categories\Queries\**" />
-    <EmbeddedResource Remove="Catalog\Categories\Queries\**" />
-    <None Remove="Catalog\Categories\Queries\**" />
-  </ItemGroup>
-
-  <ItemGroup>
     <PackageReference Include="AutoMapper" Version="11.0.1" />
     <PackageReference Include="AutoMapper.Extensions.Microsoft.DependencyInjection" Version="11.0.0" />
     <PackageReference Include="Microsoft.EntityFrameworkCore" Version="6.0.5" />
@@ -28,6 +22,8 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Folder Include="Catalog\Categories\Queries\Models\" />
+    <Folder Include="Catalog\Categories\Queries\Handlers\" />
     <Folder Include="Infrastructure\Data\Configurations\" />
   </ItemGroup>
 

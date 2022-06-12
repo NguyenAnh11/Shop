@@ -765,31 +765,7 @@ namespace Shop.Application.Infrastructure.Data.Migrations
                         });
                 });
 
-            modelBuilder.Entity("Shop.Domain.Localization.LocaleStringResource", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
-
-                    b.Property<int>("LanguageId")
-                        .HasColumnType("int");
-
-                    b.Property<string>("Name")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("Value")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("LanguageId");
-
-                    b.ToTable("LocaleStringResource");
-                });
-
-            modelBuilder.Entity("Shop.Domain.Localization.LocalizedEntity", b =>
+            modelBuilder.Entity("Shop.Domain.Localization.TranslationEntity", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -816,7 +792,31 @@ namespace Shop.Application.Infrastructure.Data.Migrations
 
                     b.HasIndex("LanguageId");
 
-                    b.ToTable("LocalizedEntity");
+                    b.ToTable("TranslationEntity");
+                });
+
+            modelBuilder.Entity("Shop.Domain.Localization.TranslationResource", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
+
+                    b.Property<int>("LanguageId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Name")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Value")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("LanguageId");
+
+                    b.ToTable("TranslationResource");
                 });
 
             modelBuilder.Entity("Shop.Domain.Media.Picture", b =>
@@ -1282,23 +1282,23 @@ namespace Shop.Application.Infrastructure.Data.Migrations
                     b.Navigation("Currency");
                 });
 
-            modelBuilder.Entity("Shop.Domain.Localization.LocaleStringResource", b =>
+            modelBuilder.Entity("Shop.Domain.Localization.TranslationEntity", b =>
+                {
+                    b.HasOne("Shop.Domain.Localization.Language", "Language")
+                        .WithMany()
+                        .HasForeignKey("LanguageId")
+                        .OnDelete(DeleteBehavior.Restrict);
+
+                    b.Navigation("Language");
+                });
+
+            modelBuilder.Entity("Shop.Domain.Localization.TranslationResource", b =>
                 {
                     b.HasOne("Shop.Domain.Localization.Language", "Language")
                         .WithMany()
                         .HasForeignKey("LanguageId")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
-
-                    b.Navigation("Language");
-                });
-
-            modelBuilder.Entity("Shop.Domain.Localization.LocalizedEntity", b =>
-                {
-                    b.HasOne("Shop.Domain.Localization.Language", "Language")
-                        .WithMany()
-                        .HasForeignKey("LanguageId")
-                        .OnDelete(DeleteBehavior.Restrict);
 
                     b.Navigation("Language");
                 });

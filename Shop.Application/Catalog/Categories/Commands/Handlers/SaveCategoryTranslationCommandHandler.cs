@@ -4,13 +4,13 @@ using Shop.Application.Seo.Services;
 
 namespace Shop.Application.Catalog.Categories.Commands.Handlers
 {
-    public class AddCategoryTranslationCommandHandler : IRequestHandler<AddCategoryTranslationCommand>
+    public class SaveCategoryTranslationCommandHandler : IRequestHandler<SaveCategoryTranslationCommand, Unit>
     {
         private readonly ShopDbContext _context;
         private readonly ISlugService _slugService;
         private readonly ITranslationEntityService _translationEntityService;
 
-        public AddCategoryTranslationCommandHandler(
+        public SaveCategoryTranslationCommandHandler(
             ShopDbContext context, 
             ISlugService slugService,
             ITranslationEntityService translationEntityService)
@@ -20,7 +20,7 @@ namespace Shop.Application.Catalog.Categories.Commands.Handlers
             _translationEntityService = translationEntityService;
         }
 
-        public async Task<Unit> Handle(AddCategoryTranslationCommand request, CancellationToken cancellationToken)
+        public async Task<Unit> Handle(SaveCategoryTranslationCommand request, CancellationToken cancellationToken)
         {
             Guard.IsNotNull(request, nameof(request));
             Guard.IsNotNull(request.Category, nameof(request.Category));

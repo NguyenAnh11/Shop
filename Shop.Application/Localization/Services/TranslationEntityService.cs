@@ -6,8 +6,9 @@ namespace Shop.Application.Localization.Services
     public class TranslationEntityService : AbstractService<TranslationEntity>, ITranslationEntityService
     {
         private readonly IWorkContext _workContext;
-        public TranslationEntityService(ShopDbContext context) : base(context)
+        public TranslationEntityService(ShopDbContext context, IWorkContext workContext) : base(context)
         {
+            _workContext = workContext;
         }
 
         private static string GetEntityKey<T>(Expression<Func<T, string>> func)
@@ -16,6 +17,19 @@ namespace Shop.Application.Localization.Services
                 MemberExpression me => me.Member.Name,
                 _ => throw new Exception()
             };
+
+        public async Task<int> GetCountTranslationsPerEntityAsync<T>(T entity)
+            where T: BaseEntity, ITranslationEntity
+        {
+            Guard.IsNotNull(entity, nameof(entity));
+
+            var count = await Table
+                .Where(p => p.EntityId == entity.Id && p.EntityGroup == typeof(T).Name)
+                .DistinctBy(p => p.LanguageId)
+                .CountAsync();
+
+            return count;
+        }
 
         private async Task<TranslationEntity> GetTranslationEntityAsync(int entityId, string entityGroup, string entityKey, int? languageId)
             => await Table
@@ -30,7 +44,9 @@ namespace Shop.Application.Localization.Services
         {
             Guard.IsNotNull(entity, nameof(entity));
             Guard.IsNotEmpty(entityKey, nameof(entityKey));
-            Guard.IsGreaterThanOrEqualTo(languageId.Value, 0, nameof(languageId));
+
+            if(languageId != null)
+                Guard.IsGreaterThan(languageId.Value, 0, nameof(languageId));
 
             var entityId = entity.Id;
             var entityGroup = entity.GetType().Name;
@@ -52,11 +68,10 @@ namespace Shop.Application.Localization.Services
             => await GetTranslationPropertyAsync(entity, GetEntityKey(func), languageId);
 
         public async Task SaveTranslationPropertyAsync<T>(T entity, string entityKey, string entityValue, int? languageId = null)
-            where T: BaseEntity, ITranslationEntity
+            where T : BaseEntity, ITranslationEntity
         {
             Guard.IsNotNull(entity, nameof(entity));
             Guard.IsNotEmpty(entityKey, nameof(entityKey));
-            Guard.IsGreaterThanOrEqualTo(languageId.Value, 0, nameof(languageId));
 
             var entityId = entity.Id;
             var entityGroup = entity.GetType().Name;
@@ -70,7 +85,7 @@ namespace Shop.Application.Localization.Services
 
             var lp = await GetTranslationEntityAsync(entityId, entityGroup, entityKey, languageId);
 
-            if(lp != null)
+            if (lp != null)
             {
                 if (entityValue.IsEmpty())
                     Table.Remove(lp);
@@ -98,19 +113,15 @@ namespace Shop.Application.Localization.Services
                 await Table.AddAsync(lp);
             }
 
-            using var transaction = await _context.Database.BeginTransactionAsync();
-
             await _context.SaveChangesAsync();
-
-            await transaction.CommitAsync();
         }
 
         public async Task SaveTranslationPropertyAsync<T>(T entity, Expression<Func<T, string>> func, string entityValue, int? languageId = null)
             where T : BaseEntity, ITranslationEntity
-                => await SaveTranslationPropertyAsync(entity, GetEntityKey(func), entityValue, languageId);   
+                => await SaveTranslationPropertyAsync(entity, GetEntityKey(func), entityValue, languageId);
 
         public async Task DeleteTranslationEntityAsync<T>(T entity)
-            where T: BaseEntity, ITranslationEntity
+            where T : BaseEntity, ITranslationEntity
         {
             Guard.IsNotNull(entity, nameof(entity));
 
@@ -118,17 +129,13 @@ namespace Shop.Application.Localization.Services
                 .Where(p => p.EntityId == entity.Id && p.EntityGroup == typeof(T).Name)
                 .ToListAsync();
 
-            using var transaction = await _context.Database.BeginTransactionAsync();
-
             Table.RemoveRange(translations);
 
             await _context.SaveChangesAsync();
-
-            await transaction.CommitAsync();
         }
 
         public async Task DeleteAllTranslationPropertyAsync<T>(T entity, Expression<Func<T, string>> func)
-            where T: BaseEntity, ITranslationEntity
+            where T : BaseEntity, ITranslationEntity
         {
             Guard.IsNotNull(entity, nameof(entity));
             Guard.IsNotNull(func, nameof(func));
@@ -139,13 +146,26 @@ namespace Shop.Application.Localization.Services
                 .Where(p => p.EntityId == entity.Id && p.EntityGroup == typeof(T).Name && p.EntityKey == entityKey)
                 .ToListAsync();
 
-            using var transaction = await _context.Database.BeginTransactionAsync();
+            Table.RemoveRange(translations);
+
+            await _context.SaveChangesAsync();
+        }
+        
+        public async Task DeleteTranslationEntityByLanguageAsync<T>(T entity, int? languageId = null)
+            where T: BaseEntity, ITranslationEntity
+        {
+            Guard.IsNotNull(entity, nameof(entity));
+
+            if (languageId != null)
+                Guard.IsGreaterThan(languageId.Value, 0, nameof(languageId));
+
+            var translations = await Table
+                .Where(p => p.EntityId == entity.Id && p.EntityGroup == typeof(T).Name && p.LanguageId == languageId)
+                .ToListAsync();
 
             Table.RemoveRange(translations);
 
             await _context.SaveChangesAsync();
-
-            await transaction.CommitAsync();
         }
     }
 }

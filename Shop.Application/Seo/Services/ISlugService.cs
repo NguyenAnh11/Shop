@@ -32,7 +32,7 @@ namespace Shop.Application.Seo.Services
         Task DeleteSlugAsync<T>(T entity) 
             where T : BaseEntity, ISlugSupported;
 
-        Task DeleteSlugAsync<T>(T entity, int? languageId = null)
-            where T : BaseEntity, ISlugSupported;
+        Task InActiveSlugAsync<T>(T entity, int languageId)
+            where T: BaseEntity, ISlugSupported;
     }
 }

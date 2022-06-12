@@ -3,7 +3,7 @@ using Shop.Domain.Catalog;
 
 namespace Shop.Application.Catalog.Categories.Commands.Models
 {
-    public class AddCategoryTranslationCommand : IRequest
+    public class SaveCategoryTranslationCommand : IRequest
     {
         public string Name { get; set; }
         public string Description { get; set; }

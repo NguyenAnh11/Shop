@@ -10,7 +10,7 @@ namespace Shop.Infrastructure.Mvc.Filters
 
             if(exception is NotFoundException)
             {
-                context.Result = new NotFoundResult();
+                context.Result = new BadRequestResult();
 
                 context.ExceptionHandled = true;
             }
