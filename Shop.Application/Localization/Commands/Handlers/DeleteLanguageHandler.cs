@@ -6,7 +6,7 @@ using Shop.Domain.Localization;
 
 namespace Shop.Application.Localization.Commands.Handlers
 {
-    public class DeleteLanguageCommandHandler : IRequestHandler<DeleteLanguageCommand, Response>
+    public class DeleteLanguageHandler : IRequestHandler<DeleteLanguageCommand, Response>
     {
         private readonly IMediator _mediator;
         private readonly ShopDbContext _context;
@@ -15,7 +15,7 @@ namespace Shop.Application.Localization.Commands.Handlers
         private readonly ITranslationService _translationService;
         private readonly LocalizationSetting _localizationSetting;
 
-        public DeleteLanguageCommandHandler(
+        public DeleteLanguageHandler(
             IMediator mediator,
             ShopDbContext context, 
             ISettingService settingService,

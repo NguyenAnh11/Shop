@@ -20,28 +20,28 @@ namespace Shop.Api.Controller
 
         [HttpGet]
         [Route("/api/languages/{id}")]
-        public async Task<IActionResult> GetById(int id)
+        public async Task<IActionResult> Get(int id)
         {
-            var model = await _mediator.Send(new GetLanguageQuery(id));
+            var model = await _mediator.Send(new GetLanguageByIdQuery(id));
 
             return Ok(model);
         }
 
         [HttpPost]
         [Route("/api/languages")]
-        public async Task<IActionResult> CreateLanguage([FromBody] CreateLanguageCommand command)
+        public async Task<IActionResult> Create([FromBody] CreateLanguageCommand command)
         {
             var response = await _mediator.Send(command);
 
             if (!response.Success)
                 return BadRequest(response.Message);
 
-            return CreatedAtAction(nameof(GetById), new { id = response.Data }, response.Data);
+            return CreatedAtAction(nameof(Get), new { id = response.Data }, response.Data);
         }
 
         [HttpPut]
         [Route("/api/languages/{id}")]
-        public async Task<IActionResult> UpdateLanguage(int id, [FromBody] UpdateLanguageCommand command)
+        public async Task<IActionResult> Update(int id, [FromBody] UpdateLanguageCommand command)
         {
             if (id != command.Id)
                 return BadRequest();

@@ -4,13 +4,13 @@ using Shop.Application.Seo.Services;
 
 namespace Shop.Application.Catalog.Categories.Commands.Handlers
 {
-    public class SaveCategoryTranslationCommandHandler : IRequestHandler<SaveCategoryTranslationCommand, Unit>
+    public class SaveCategoryTranslationHandler : IRequestHandler<SaveCategoryTranslationCommand, Unit>
     {
         private readonly ShopDbContext _context;
         private readonly ISlugService _slugService;
         private readonly ITranslationEntityService _translationEntityService;
 
-        public SaveCategoryTranslationCommandHandler(
+        public SaveCategoryTranslationHandler(
             ShopDbContext context, 
             ISlugService slugService,
             ITranslationEntityService translationEntityService)

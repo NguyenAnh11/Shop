@@ -1,5 +1,5 @@
-﻿using Shop.Domain.Localization;
-using Shop.Application.Localization.Dtos;
+﻿using Shop.Application.Localization.Dtos;
+using Shop.Domain.Localization;
 
 namespace Shop.Application.Localization.Profiles
 {
@@ -7,7 +7,8 @@ namespace Shop.Application.Localization.Profiles
     {
         public LanguageProfile()
         {
-            CreateMap<Language, LanguageDto>();
+            CreateMap<Language, LanguageDto>()
+                .ForMember(p => p.CurrencyId, s => s.MapFrom(s => s.CurrencyId ?? 0));
         }
     }
 }

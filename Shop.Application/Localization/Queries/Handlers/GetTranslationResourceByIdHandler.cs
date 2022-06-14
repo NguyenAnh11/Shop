@@ -4,12 +4,12 @@ using Shop.Application.Localization.Services;
 
 namespace Shop.Application.Localization.Queries.Handlers
 {
-    public class GetTranslationResourceQueryHandler : IRequestHandler<GetTranslationResourceQuery, TranslationResourceDto>
+    public class GetTranslationResourceByIdHandler : IRequestHandler<GetTranslationResourceByIdQuery, TranslationResourceDto>
     {
         private readonly IMapper _mapper;   
         private readonly ITranslationService _translationService;   
 
-        public GetTranslationResourceQueryHandler(
+        public GetTranslationResourceByIdHandler(
             IMapper mapper, 
             ITranslationService translationService)
         {
@@ -17,7 +17,7 @@ namespace Shop.Application.Localization.Queries.Handlers
             _translationService = translationService;
         }
 
-        public async Task<TranslationResourceDto> Handle(GetTranslationResourceQuery request, CancellationToken cancellationToken)
+        public async Task<TranslationResourceDto> Handle(GetTranslationResourceByIdQuery request, CancellationToken cancellationToken)
         {
             var translation = await _translationService.GetTranslationByIdAsync(request.Id);
 

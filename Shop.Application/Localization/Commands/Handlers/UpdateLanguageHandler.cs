@@ -3,17 +3,17 @@ using Shop.Application.Localization.Services;
 
 namespace Shop.Application.Localization.Commands.Handlers
 {
-    public class UpdateLanguageCommandHandler : IRequestHandler<UpdateLanguageCommand, Response<int>>
+    public class UpdateLanguageHandler : IRequestHandler<UpdateLanguageCommand, Response<int>>
     {
         private readonly IMediator _mediator;
         private readonly ShopDbContext _context;
         private readonly ILanguageService _languageService;
         private readonly ITranslationService _translationService;
 
-        public UpdateLanguageCommandHandler(
-            IMediator mediator, 
-            ShopDbContext context, 
-            ILanguageService languageService, 
+        public UpdateLanguageHandler(
+            IMediator mediator,
+            ShopDbContext context,
+            ILanguageService languageService,
             ITranslationService translationService)
         {
             _mediator = mediator;
@@ -29,19 +29,19 @@ namespace Shop.Application.Localization.Commands.Handlers
             if (language == null)
                 throw new NotFoundException();
 
-            if(!language.Code.EqualsNoCase(request.Code))
+            if (!language.Code.EqualsNoCase(request.Code))
             {
-                if(await _languageService.GetLanguageByCodeAsync(request.Code) != null)
+                if (await _languageService.GetLanguageByCodeAsync(request.Code) != null)
                 {
                     return Response<int>.Bad(await _translationService.GetTranslationAsync("Language.Error.AlreadyCodeExist"));
                 }
             }
 
-            if(language.IsActive && !request.IsActive)
+            if (language.IsActive && !request.IsActive)
             {
                 var languages = await _languageService.GetLanguagesAsync(false);
 
-                if(languages.Count == 1 && languages[0].Id == language.Id)
+                if (languages.Count == 1 && languages[0].Id == language.Id)
                 {
                     return Response<int>.Bad(await _translationService.GetTranslationAsync("Language.Error.RequireAtLeastActive"));
                 }

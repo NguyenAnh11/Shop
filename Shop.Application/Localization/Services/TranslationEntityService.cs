@@ -19,7 +19,7 @@ namespace Shop.Application.Localization.Services
             };
 
         public async Task<int> GetCountTranslationsPerEntityAsync<T>(T entity)
-            where T: BaseEntity, ITranslationEntity
+            where T : BaseEntity, ITranslationEntity
         {
             Guard.IsNotNull(entity, nameof(entity));
 
@@ -45,7 +45,7 @@ namespace Shop.Application.Localization.Services
             Guard.IsNotNull(entity, nameof(entity));
             Guard.IsNotEmpty(entityKey, nameof(entityKey));
 
-            if(languageId != null)
+            if (languageId != null)
                 Guard.IsGreaterThan(languageId.Value, 0, nameof(languageId));
 
             var entityId = entity.Id;
@@ -150,9 +150,9 @@ namespace Shop.Application.Localization.Services
 
             await _context.SaveChangesAsync();
         }
-        
+
         public async Task DeleteTranslationEntityByLanguageAsync<T>(T entity, int? languageId = null)
-            where T: BaseEntity, ITranslationEntity
+            where T : BaseEntity, ITranslationEntity
         {
             Guard.IsNotNull(entity, nameof(entity));
 
