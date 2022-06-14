@@ -17,9 +17,4 @@
     <PackageReference Include="MimeKit" Version="3.2.0" />
   </ItemGroup>
 
-  <ItemGroup>
-    <Folder Include="Cache\Memory\" />
-    <Folder Include="Cache\Redis\" />
-  </ItemGroup>
-
 </Project>

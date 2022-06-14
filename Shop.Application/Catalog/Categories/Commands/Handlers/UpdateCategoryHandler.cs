@@ -6,7 +6,7 @@ using Shop.Application.Seo.Services;
 
 namespace Shop.Application.Catalog.Categories.Commands.Handlers
 {
-    public class UpdateCategoryCommandHandler : IRequestHandler<UpdateCategoryCommand, int>
+    public class UpdateCategoryHandler : IRequestHandler<UpdateCategoryCommand, int>
     {
         private readonly IMediator _mediator;
         private readonly ShopDbContext _context;
@@ -15,7 +15,7 @@ namespace Shop.Application.Catalog.Categories.Commands.Handlers
         private readonly ICategoryService _categoryService;
         private readonly ITranslationEntityService _translationEntityService;
 
-        public UpdateCategoryCommandHandler(
+        public UpdateCategoryHandler(
             IMediator mediator,
             ShopDbContext context,
             ISlugService slugService,

@@ -10,6 +10,7 @@ global using Microsoft.Extensions.DependencyInjection;
 global using Microsoft.Extensions.Hosting;
 global using Microsoft.Toolkit.Diagnostics;
 global using Shop.Application.Infrastructure;
+global using Shop.Application.Infrastructure.Caching;
 global using Shop.Application.Infrastructure.Configurations;
 global using Shop.Application.Infrastructure.Extensions;
 global using Shop.Application.Infrastructure.Storage;

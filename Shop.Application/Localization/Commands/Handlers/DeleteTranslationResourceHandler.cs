@@ -3,20 +3,20 @@ using Shop.Application.Localization.Services;
 
 namespace Shop.Application.Localization.Commands.Handlers
 {
-    public class DeleteTranslationResourceCommandHandler : IRequestHandler<DeleteTranslationResourceCommand>
+    public class DeleteTranslationResourceHandler : IRequestHandler<DeleteTranslationResourceCommand>
     {
         private readonly IMediator _mediator;
         private readonly ShopDbContext _context;
         private readonly ITranslationService _translationService;
 
-        public DeleteTranslationResourceCommandHandler(
+        public DeleteTranslationResourceHandler(
             IMediator mediator,
             ShopDbContext context,
             ITranslationService translationService)
         {
             _mediator = mediator;
             _context = context;
-            _translationService = translationService;   
+            _translationService = translationService;
         }
 
         public async Task<Unit> Handle(DeleteTranslationResourceCommand request, CancellationToken cancellationToken)

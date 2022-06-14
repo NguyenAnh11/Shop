@@ -4,15 +4,15 @@ using Shop.Domain.Localization;
 
 namespace Shop.Application.Localization.Commands.Handlers
 {
-    public class CreateTranslationResourceCommandHandler : IRequestHandler<CreateTranslationResourceCommand, Response<int>>
+    public class CreateTranslationResourceHandler : IRequestHandler<CreateTranslationResourceCommand, Response<int>>
     {
         private readonly IMediator _mediator;
         private readonly ShopDbContext _context;
         private readonly ITranslationService _translationService;
 
-        public CreateTranslationResourceCommandHandler(
+        public CreateTranslationResourceHandler(
             IMediator mediator,
-            ShopDbContext context, 
+            ShopDbContext context,
             ITranslationService translationService)
         {
             _mediator = mediator;
@@ -26,7 +26,7 @@ namespace Shop.Application.Localization.Commands.Handlers
 
             var translation = await _translationService.GetTranslationByNameAsync(request.Name, request.LanguageId);
 
-            if(translation != null)
+            if (translation != null)
             {
                 return Response<int>.Bad(await _translationService.GetTranslationAsync("Resource.Error.NameAlreadyExist"));
             }

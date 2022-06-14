@@ -5,14 +5,14 @@ using Shop.Domain.Catalog;
 
 namespace Shop.Application.Catalog.Categories.Commands.Handlers
 {
-    public class DeleteCategoryCommandHandler : IRequestHandler<DeleteCategoryCommand>
+    public class DeleteCategoryHandler : IRequestHandler<DeleteCategoryCommand>
     {
         private readonly IMediator _meidator;
         private readonly ShopDbContext _context;
         private readonly ISlugService _slugService;
         private readonly ICategoryService _categoryService;
 
-        public DeleteCategoryCommandHandler(
+        public DeleteCategoryHandler(
             IMediator mediator,
             ShopDbContext context, 
             ISlugService slugService, 

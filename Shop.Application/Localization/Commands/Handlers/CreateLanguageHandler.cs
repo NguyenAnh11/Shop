@@ -4,16 +4,16 @@ using Shop.Domain.Localization;
 
 namespace Shop.Application.Localization.Commands.Handlers
 {
-    public class CreateLanguageCommandHandler : IRequestHandler<CreateLanguageCommand, Response<int>>
+    public class CreateLanguageHandler : IRequestHandler<CreateLanguageCommand, Response<int>>
     {
         private readonly IMediator _mediator;
         private readonly ShopDbContext _context;
         private readonly ILanguageService _languageService;
         private readonly ITranslationService _translationService;
 
-        public CreateLanguageCommandHandler(
+        public CreateLanguageHandler(
             IMediator mediator,
-            ShopDbContext context, 
+            ShopDbContext context,
             ILanguageService languageService,
             ITranslationService translationService)
         {

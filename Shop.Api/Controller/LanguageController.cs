@@ -22,7 +22,7 @@ namespace Shop.Api.Controller
         [Route("/api/languages/{id}")]
         public async Task<IActionResult> Get(int id)
         {
-            var model = await _mediator.Send(new GetLanguageQuery(id));
+            var model = await _mediator.Send(new GetLanguageByIdQuery(id));
 
             return Ok(model);
         }

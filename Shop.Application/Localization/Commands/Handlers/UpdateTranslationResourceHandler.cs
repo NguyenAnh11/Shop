@@ -3,14 +3,14 @@ using Shop.Application.Localization.Services;
 
 namespace Shop.Application.Localization.Commands.Handlers
 {
-    public class UpdateTranslationResourceCommandHandler : IRequestHandler<UpdateTranslationResourceCommand, Response<int>>
+    public class UpdateTranslationResourceHandler : IRequestHandler<UpdateTranslationResourceCommand, Response<int>>
     {
         private readonly IMediator _mediator;
         private readonly ShopDbContext _context;
         private readonly ITranslationService _translationService;
 
-        public UpdateTranslationResourceCommandHandler(
-            IMediator mediator, 
+        public UpdateTranslationResourceHandler(
+            IMediator mediator,
             ShopDbContext context,
             ITranslationService translationService)
         {

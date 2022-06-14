@@ -4,12 +4,12 @@ using Shop.Application.Localization.Services;
 
 namespace Shop.Application.Localization.Queries.Handlers
 {
-    public class GetLanguageQueryHandler : IRequestHandler<GetLanguageQuery, LanguageDto>
+    public class GetLanguageByIdHandler : IRequestHandler<GetLanguageByIdQuery, LanguageDto>
     {
         private readonly IMapper _mapper;
         private readonly ILanguageService _languageService;
 
-        public GetLanguageQueryHandler(
+        public GetLanguageByIdHandler(
             IMapper mapper,
             ILanguageService languageService)
         {
@@ -17,7 +17,7 @@ namespace Shop.Application.Localization.Queries.Handlers
             _languageService = languageService;
         }
 
-        public async Task<LanguageDto> Handle(GetLanguageQuery request, CancellationToken cancellationToken)
+        public async Task<LanguageDto> Handle(GetLanguageByIdQuery request, CancellationToken cancellationToken)
         {
             var language = await _languageService.GetLanguageByIdAsync(request.Id);
 

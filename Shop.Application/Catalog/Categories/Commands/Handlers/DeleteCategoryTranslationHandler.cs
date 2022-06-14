@@ -4,13 +4,13 @@ using Shop.Application.Seo.Services;
 
 namespace Shop.Application.Catalog.Categories.Commands.Handlers
 {
-    public class DeleteCategoryTranslationCommandHandler : IRequestHandler<DeleteCategoryTranslationCommand, Unit>
+    public class DeleteCategoryTranslationHandler : IRequestHandler<DeleteCategoryTranslationCommand, Unit>
     {
         private readonly ShopDbContext _context;
         private readonly ISlugService _slugService;
         private readonly ITranslationEntityService _translationEntityService;
 
-        public DeleteCategoryTranslationCommandHandler(
+        public DeleteCategoryTranslationHandler(
             ShopDbContext context, 
             ISlugService slugService,
             ITranslationEntityService translationEntityService)
